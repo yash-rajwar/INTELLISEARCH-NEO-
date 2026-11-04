@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% block crumb %}Search workspace{% endblock %}{% block content %}
+<div class="pagehead"><div><span class="eyebrow dark">RETRIEVAL WORKSPACE</span><h1>Search documents</h1><p>Find concepts, passages and source references using four search strategies.</p></div></div>
+{% set action='/search' %}{% include '_filters.html' %}
+{% if error %}<div class="alert error">{{ error }} {% if 'timed out' in error %}Try BM25 while ELSER inference is unavailable.{% endif %}</div>{% endif %}
+{% if result %}<div class="resultsbar"><div><b>{{ result.count }}</b> result(s) · <b>{{ result.elapsed_ms }} ms</b> HTTP · Elasticsearch {{ result.took }} ms · <b>{{ result.mode_used }}</b></div><div><a href="{{ url_for('compare',q=q,scope=scope) }}">Compare rankings →</a> <a href="{{ url_for('export_results',q=q,scope=scope,mode=mode) }}">Download CSV ↓</a></div></div>
+{% if result.warning %}<div class="alert info">{{ result.warning }}</div>{% endif %}
+<div class="results">{% set hits=result.hits %}{% include '_hits.html' %}</div>
+{% elif not q %}<div class="onboarding"><span>✧</span><h2>Start with a question</h2><p>Choose a collection and retrieval method. Try ELSER to locate conceptually similar passages.</p></div>{% endif %}
+{% endblock %}

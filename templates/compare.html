@@ -1,0 +1,8 @@
+{% extends 'base.html' %}{% block crumb %}Compare methods{% endblock %}{% block content %}
+<div class="pagehead"><div><span class="eyebrow dark">RETRIEVAL LAB</span><h1>Compare search methods</h1><p>View four independent rankings. This is a demonstration, not an accuracy benchmark.</p></div></div>
+{% set action='/compare' %}{% include '_filters.html' %}
+{% if outputs %}<div class="comparison">{% for mode,entry in outputs.items() %}<section class="panel column"><div class="panel-head"><h2>{{ MODES[mode] }}</h2></div>
+{% if entry.error %}<p class="alert error">{{ entry.error }}</p>{% else %}<p class="subtle">{{ entry.result.elapsed_ms }} ms · {{ entry.result.count }} matches</p>{% if entry.result.warning %}<p class="alert info">{{ entry.result.warning }}</p>{% endif %}
+{% for h in entry.result.hits %}<div class="comparison-hit"><span class="rank">#{{ h.rank }}</span><b>{{ h.title }}</b><p>{{ h.passage[:160] }}</p>{% if h.has_context %}<a href="{{ url_for('context',index=h.index,hit_id=h.id) }}">Inspect context ↗</a>{% endif %}</div>{% else %}<p>No results.</p>{% endfor %}{% endif %}</section>{% endfor %}</div>{% endif %}
+<p class="disclaimer">Query times include local inference and network overhead. Compare passage relevance by opening the original source; ranking agreement is not proof of an answer.</p>
+{% endblock %}

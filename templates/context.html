@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% block crumb %}Source context{% endblock %}{% block content %}
+<div class="pagehead"><div><span class="eyebrow dark">PASSAGE CONTEXT</span><h1>{{ src.title or src.filename or 'Source passage' }}</h1><p>{{ index }} · {{ hit_id }}</p></div></div>
+<div class="panel"><h2>Indexed passage</h2><div class="excerpt full">{{ src.content or src.text or 'No text stored for this entry.' }}</div>
+{% if src.get('page_number') and src.get('document_id') %}<a class="buttonlink" href="{{ url_for('uploaded_v2' if index=='intellisearch_showcase_chunks_v2' else 'uploaded',doc_id=src.document_id) }}#page={{ src.page_number }}" target="_blank" rel="noopener">Open original PDF, page {{ src.page_number }} ↗</a>{% elif src.get('book_id') and src.get('start_line') %}<a class="buttonlink" href="{{ url_for('book',book_id=src.book_id,line=src.start_line) }}">Open original line {{ src.start_line }} ↗</a>{% endif %}</div>
+{% if source_lines %}<div class="panel"><h2>Neighboring original source lines</h2><p class="subtle">Highlighted region is the indexed passage; surrounding lines are added at display time only.</p>
+<div class="reader">{% for r in source_lines %}<div class="source-row {% if r.selected %}chosen{% endif %}"><span class="line-num">{{ r.n }}</span><pre>{{ r.text }}</pre></div>{% endfor %}</div></div>{% endif %}
+{% if nearby %}<div class="panel"><h2>Neighboring indexed chunks</h2>{% for p in nearby %}<h3>Chunk {{ p.index }}</h3><div class="excerpt full">{{ p.text }}</div>{% endfor %}</div>{% endif %}
+<p class="disclaimer">Context expansion is for inspecting evidence, not a new relevance score. Original files may contain page/text-extraction limitations.</p>
+{% endblock %}

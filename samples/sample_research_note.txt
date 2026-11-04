@@ -1,0 +1,7 @@
+IntelliSearch Research Note
+
+BM25 is a keyword-based ranking method. ELSER is a sparse semantic retrieval approach. Reciprocal Rank Fusion combines ordered result lists.
+
+In this synthetic test document, the silver compass is stored in Workshop C, cabinet number 42. The caretaker checks it every Friday.
+
+This is a demonstration document containing fictional facts only.

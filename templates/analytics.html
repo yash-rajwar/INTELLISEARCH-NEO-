@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% block crumb %}Analytics{% endblock %}{% block content %}
+<div class="pagehead"><div><span class="eyebrow dark">LOCAL ACTIVITY</span><h1>Search analytics</h1><p>See how the showcase is being used. All data remains in the local SQLite file.</p></div></div>
+<div class="stats three"><div class="stat"><span>TOTAL SEARCHES</span><strong>{{ stats.queries }}</strong><small>Includes comparison queries</small></div>
+<div class="stat"><span>INDEXED UPLOADS</span><strong>{{ stats.uploads }}</strong><small>Experimental files only</small></div>
+<div class="stat"><span>AVERAGE RESPONSE</span><strong>{{ stats.avg_ms }}<small> ms</small></strong><small>Successful local requests</small></div></div>
+<div class="split"><section class="panel"><h2>Methods used</h2>{% for item in stats.methods %}<div class="method-usage"><span>{{ MODES.get(item.mode,item.mode) }}</span><strong>{{ item.n }}</strong></div>{% else %}<p>No searches yet.</p>{% endfor %}</section>
+<section class="panel"><h2>Measurement notes</h2><p>These figures measure request volume and latency, not retrieval correctness. Phase 2G remains the experimental quality baseline.</p><p>Search queries are stored locally in the showcase SQLite database. Do not upload confidential material to an unauthenticated local demo.</p></section></div>
+<section class="panel"><h2>Recent requests</h2><div class="table-scroll"><table><thead><tr><th>Query</th><th>Mode</th><th>Scope</th><th>Hits</th><th>Latency</th><th>Status</th></tr></thead><tbody>
+{% for h in stats.recent %}<tr><td>{{ h.query }}</td><td>{{ h.mode }}</td><td>{{ h.scope }}</td><td>{{ h.hits }}</td><td>{{ h.elapsed_ms }} ms</td><td>{{ h.status }}</td></tr>
+{% else %}<tr><td colspan="6">No activity yet.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

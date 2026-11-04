@@ -1,0 +1,7 @@
+<form class="filter-form panel" action="{{ action }}" method="get"><div class="fields">
+<label class="field wide">Natural-language query<input type="search" name="q" value="{{ q }}" required maxlength="500" placeholder="Ask a question or describe what you're looking for"></label>
+<label class="field">Collection<select name="scope">{% for val,label in SCOPES.items() %}<option value="{{ val }}" {% if val==scope %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+{% if action=='/search' %}<label class="field">Retrieval method<select name="mode">{% for val,label in MODES.items() %}<option value="{{ val }}" {% if val==mode %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+<label class="field">Book (optional)<select name="book_id"><option value="">All books</option>{% for val,label in BOOK_NAMES.items() %}<option value="{{ val }}" {% if val==book_id %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+<label class="field">Uploaded type (optional)<select name="doc_type"><option value="">All types</option>{% for t in ['.pdf','.docx','.txt'] %}<option value="{{ t }}" {% if t==doc_type %}selected{% endif %}>{{ t.upper()[1:] }}</option>{% endfor %}</select></label>{% endif %}
+</div><button class="primary">{{ 'Compare all four methods' if action=='/compare' else 'Search documents' }} →</button></form>

@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block crumb %}Semantic diagnostic{% endblock %}{% block content %}
+<div class="pagehead"><div><h1>ELSER live test</h1><p>One semantic search request against the existing passage index.</p></div></div>
+<div class="panel"><div class="alert {{ 'success' if report.ok else 'error' }}">{{ report.message }}</div><a class="buttonlink" href="/system">Back to diagnostics →</a><a class="buttonlink" href="/search?scope=passages&mode=keyword">Switch to BM25 →</a></div>
+{% endblock %}

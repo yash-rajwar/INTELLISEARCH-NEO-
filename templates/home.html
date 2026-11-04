@@ -1,0 +1,30 @@
+{% extends 'base.html' %}{% block crumb %}Overview{% endblock %}{% block content %}
+<section class="hero"><span class="eyebrow">SEMANTIC DOCUMENT DISCOVERY · DOCUMENT INTELLIGENCE · V3</span>
+<h1>Search. Understand. Verify.</h1><p>Explore semantic retrieval, evidence-led question answering, document comparisons, summaries, and OCR — all in a local research showcase.</p>
+<form class="hero-search" action="/search"><input name="q" required maxlength="500" placeholder="Try: a scientist destroys his unfinished creation"><input type="hidden" name="scope" value="passages"><input type="hidden" name="mode" value="semantic"><button>Search with ELSER →</button></form></section>
+<section class="quick-actions">
+<a class="quick-action" href="/ask"><span>✦</span><strong>Ask your documents</strong><small>Evidence-backed Q&A</small></a>
+<a class="quick-action" href="/summarize"><span>☷</span><strong>Document insights</strong><small>Summaries & classification</small></a>
+<a class="quick-action" href="/doc-compare"><span>▥</span><strong>Compare documents</strong><small>Shared topics & differences</small></a>
+<a class="quick-action" href="/library"><span>▤</span><strong>OCR and indexing</strong><small>Scanned PDF, DOCX, TXT</small></a>
+</section>
+<div class="alert info"><b>Presentation tip:</b> Start with <a href="/demo">the guided demo</a>, then open <a href="/system">system diagnostics</a> before showing Kibana.</div>
+<h2 class="section-heading">Your research collections</h2>
+<div class="stats four"><a href="/search?scope=books" class="stat"><span>WHOLE BOOKS</span><strong>{{ counts.books if counts.books is not none else '—' }}</strong><small>Legacy index · read only</small></a>
+<a href="/search?scope=passages" class="stat"><span>BOOK PASSAGES</span><strong>{{ counts.passages if counts.passages is not none else '—' }}</strong><small>Phase 2E · read only</small></a>
+<a href="/search?scope=documents" class="stat"><span>DEMO DOCUMENTS</span><strong>{{ counts.documents if counts.documents is not none else '—' }}</strong><small>Legacy index · read only</small></a>
+<a href="/library" class="stat"><span>NEW PASSAGES</span><strong>{{ counts.uploads if counts.uploads is not none else '—' }}</strong><small>Separate experimental index</small></a></div>
+{% if error %}<div class="alert error">Elasticsearch connection: {{ error }}</div>{% endif %}
+<div class="split"><section class="panel"><div class="panel-head"><h2>Explore capabilities</h2><span class="pill">Demo ready</span></div>
+<div class="feature-list"><a href="/search"><b>⌕ &nbsp; Natural language search</b><span>BM25, ELSER, hybrid, weighted RRF ↗</span></a>
+<a href="/compare"><b>⇄ &nbsp; Compare retrieval methods</b><span>Four rankings, times, and source links ↗</span></a>
+<a href="/library"><b>▤ &nbsp; Upload a new document</b><span>PDF · DOCX · TXT · page-level PDF links ↗</span></a>
+<a href="/demo"><b>▶ &nbsp; Guided project-lead demo</b><span>Prepared queries and source checks ↗</span></a>
+<a href="/system"><b>◉ &nbsp; System diagnostics</b><span>Indices, ELSER, OCR and Ollama status ↗</span></a>
+<a href="/bookmarks"><b>◇ &nbsp; Saved passages and query history</b><span>Bookmarks and local query suggestions ↗</span></a>
+<a href="/analytics"><b>◷ &nbsp; Review query activity</b><span>Inspect search performance and method usage ↗</span></a></div></section>
+<section class="panel"><div class="panel-head"><h2>Example questions</h2></div><p class="subtle">Open a prepared question in the passage index.</p>
+{% set examples=['A scientist destroys an unfinished second creation','A trapped traveler sees a castle owner crawl down the wall','A girl attends a strange tea party with a hatter','A monarch hires a detective to recover a photograph'] %}
+{% for q in examples %}<a class="example" href="{{ url_for('search_page',q=q,scope='passages',mode='semantic') }}">{{ q }} <span>↗</span></a>{% endfor %}</section></div>
+<p class="disclaimer">This is a capability demo, not a validated production search system. Passage relevance and automatically extracted document metadata can be imperfect. Endpoint: {{ version }}.</p>
+{% endblock %}

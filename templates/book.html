@@ -1,0 +1,6 @@
+{% extends 'base.html' %}{% block crumb %}Source reader{% endblock %}{% block content %}
+<div class="pagehead"><div><span class="eyebrow dark">VERIFIABLE SOURCE NAVIGATION</span><h1>{{ title }}</h1><p>Original cleaned book text · Showing lines near {{ selected }} of {{ total }}.</p></div>
+<a class="buttonlink" href="{{ url_for('book',book_id=book_id,line=selected-35) }}">← Earlier lines</a><a class="buttonlink" href="{{ url_for('book',book_id=book_id,line=selected+35) }}">Later lines →</a></div>
+<div class="reader">{% for r in rows %}<div class="source-row {% if r.selected %}chosen{% endif %}" id="L{{ r.n }}"><a href="#L{{ r.n }}">{{ r.n }}</a><pre>{{ r.text }}</pre></div>{% endfor %}</div>
+<p class="disclaimer">Section or chapter labels in experimental index metadata may be inaccurate; original source-line text is shown here.</p>
+{% endblock %}
