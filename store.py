@@ -24,7 +24,7 @@ CREATE INDEX IF NOT EXISTS idx_search_date ON searches(created_at);
 
 def init_db():
     DATA.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(DB) as c:
+    with db() as c:  # db() commits and then closes; "with sqlite3.connect()" never closes
         c.executescript(SCHEMA)
 
 

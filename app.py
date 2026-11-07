@@ -4,7 +4,7 @@ import csv
 import secrets
 import getpass
 import io
-import os
+import logging
 import re
 import time
 import uuid
@@ -59,16 +59,22 @@ from documents import choices, read_source
 from llm import enabled as llm_enabled, generate as llm_generate
 from v2_reader import v2_docs, v2_path, v2_doc
 from config import DATA, V2_INDEX
+from bootstrap import load_secret_key, setup_logging
+
+setup_logging(DATA)
+log = logging.getLogger("intellisearch")
 
 app = Flask(__name__)
 app.jinja_env.globals["LEGACY_ENABLED"] = LEGACY_ENABLED
 app.config.update(
     MAX_CONTENT_LENGTH=MAX_FILE_BYTES + 2048,
-    SECRET_KEY=os.environ.get("INTELLI_SECRET_KEY") or uuid.uuid4().hex,
+    SECRET_KEY=load_secret_key(DATA),
 )
 init_v2_db()
 UPLOADS.mkdir(parents=True, exist_ok=True)
-ES_CLIENT = None
+# Created at import time so "flask run" and other servers get a client too.
+# ES() only builds an HTTP session; it does not contact Elasticsearch.
+ES_CLIENT = ES(password=ES_PASSWORD) if ES_PASSWORD else None
 
 
 @app.context_processor
@@ -147,6 +153,7 @@ def search_page():
             result = search(client(), q, scope, mode, book_id, doc_type)
         except (ESFailure, ValueError, KeyError) as exc:
             error = str(exc)
+            log.warning("search failed (scope=%s mode=%s): %s", scope, mode, exc)
         ms = round((time.monotonic() - started) * 1000)
         log_query(
             q, scope, mode, len(result["hits"]) if result else 0, ms, "error" if error else "ok"
@@ -309,6 +316,7 @@ def upload():
             "success",
         )
     except (ValueError, RuntimeError, OSError, ESFailure, KeyError, ImportError) as exc:
+        log.warning("upload failed for %s: %s", filename, exc)
         save_doc(doc_id, filename, ext, len(data), status="error", error=str(exc))
         flash("Upload could not be indexed: " + str(exc)[:450], "error")
     return redirect(url_for("library"))
@@ -772,13 +780,17 @@ def suggest():
     if len(term) < 2:
         return jsonify({"suggestions": []})
     suggestions = []
-    for s in recent_queries(80) + ([
-        "A scientist destroys an unfinished second creation",
-        "A monarch hires a detective to recover an embarrassing photograph",
-        "A girl attends a strange tea party with a hatter",
-        "A mysterious ship arrives at Whitby",
-        "blue lantern North Archive",
-    ] if LEGACY_ENABLED else []):
+    for s in recent_queries(80) + (
+        [
+            "A scientist destroys an unfinished second creation",
+            "A monarch hires a detective to recover an embarrassing photograph",
+            "A girl attends a strange tea party with a hatter",
+            "A mysterious ship arrives at Whitby",
+            "blue lantern North Archive",
+        ]
+        if LEGACY_ENABLED
+        else []
+    ):
         if term in s.lower() and s not in suggestions:
             suggestions.append(s)
         if len(suggestions) >= 7:
@@ -814,9 +826,8 @@ def saved_passages():
 
 
 if __name__ == "__main__":
-
-    password = ES_PASSWORD or getpass.getpass("Elasticsearch password (elastic user): ")
-    ES_CLIENT = ES(password=password)
+    if ES_CLIENT is None:  # no ES_PASSWORD in .env or the environment
+        ES_CLIENT = ES(password=getpass.getpass("Elasticsearch password (elastic user): "))
     try:
         print("Elasticsearch version:", ES_CLIENT.probe(), flush=True)
     except ESFailure as e:
