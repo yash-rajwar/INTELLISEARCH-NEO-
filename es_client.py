@@ -110,9 +110,9 @@ class ES:
         started = time.monotonic()
         self.api(
             "POST",
-            f"_ml/trained_models/{quote(ES_INFERENCE_ID, safe='')}/_infer?timeout=120s",
+            f"_ml/trained_models/{quote(ES_INFERENCE_ID, safe='')}/_infer?timeout=280s",
             payload={"docs": [{"text_field": "warm up"}]},
-            timeout=130,
+            timeout=300,
         )
         return round((time.monotonic() - started) * 1000)
 
@@ -139,6 +139,8 @@ class ES:
             note = ""
             if state == "failed":
                 note = "The deployment failed; it needs to be stopped and restarted."
+            elif state == "starting":
+                note = "Still starting: after idle this can take several minutes. Wait, then open /warmup again."
             elif state == "started" and allocations == 0:
                 note = "Scaled to zero while idle: the first semantic query can take about 30 s. Open /warmup before presenting."
             return {"state": state, "allocations": allocations, "note": note}

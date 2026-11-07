@@ -855,12 +855,20 @@ if __name__ == "__main__":
     except ESFailure as e:
         print("Elasticsearch unavailable:", e, flush=True)
 
-    def _warm_up_in_background():
-        try:
-            log.info("ELSER warm-up finished in %s ms", ES_CLIENT.warm_up())
-        except ESFailure as exc:
-            log.warning("ELSER warm-up failed: %s", exc)
+    ELSER_KEEPALIVE_SECONDS = 120  # 0 means warm up once and stop
 
-    threading.Thread(target=_warm_up_in_background, daemon=True).start()
+    def _keep_elser_warm():
+        # ELSER scales to zero when idle and then needs a slow cold start. This warms it
+        # at start-up and pings it now and then while the app runs.
+        while True:
+            try:
+                log.info("ELSER warm-up finished in %s ms", ES_CLIENT.warm_up())
+            except ESFailure as exc:
+                log.warning("ELSER warm-up failed: %s", exc)
+            if ELSER_KEEPALIVE_SECONDS <= 0:
+                return
+            time.sleep(ELSER_KEEPALIVE_SECONDS)
+
+    threading.Thread(target=_keep_elser_warm, daemon=True).start()
     print("V3 showcase: http://127.0.0.1:5003 | original, V1 and V2 unchanged", flush=True)
     app.run(host=HOST, port=PORT, debug=False, threaded=True, use_reloader=False)
