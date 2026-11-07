@@ -1,70 +1,93 @@
 """Extract trusted plain text from uploaded public/local samples. Never execute file contents."""
+
 import io
 from pathlib import Path
 from config import MAX_CHARS, MAX_CHUNKS, MAX_PAGES
 
+
 def text_pages(data: bytes, extension: str, ocr=False):
-    if extension == '.txt':
-        text = data.decode('utf-8-sig',errors='replace').replace('\x00','')
-        return [{'page':None,'text':text}],0
-    if extension == '.pdf':
+    if extension == ".txt":
+        text = data.decode("utf-8-sig", errors="replace").replace("\x00", "")
+        return [{"page": None, "text": text}], 0
+    if extension == ".pdf":
         from pypdf import PdfReader
+
         reader = PdfReader(io.BytesIO(data), strict=False)
         if reader.is_encrypted:
-            raise ValueError('Encrypted PDFs are not supported. Please use an unencrypted copy.')
-        if len(reader.pages)>MAX_PAGES:
-            raise ValueError(f'PDF exceeds {MAX_PAGES} pages.')
+            raise ValueError("Encrypted PDFs are not supported. Please use an unencrypted copy.")
+        if len(reader.pages) > MAX_PAGES:
+            raise ValueError(f"PDF exceeds {MAX_PAGES} pages.")
         output = []
         missing = []
-        for i,pg in enumerate(reader.pages,1):
-            txt = (pg.extract_text() or '').replace('\x00','')
-            if txt.strip():output.append({'page':i,'text':txt})
-            else:missing.append(i)
+        for i, pg in enumerate(reader.pages, 1):
+            txt = (pg.extract_text() or "").replace("\x00", "")
+            if txt.strip():
+                output.append({"page": i, "text": txt})
+            else:
+                missing.append(i)
         if ocr and missing:
             from ocr import ocr_pdf_pages
-            ocr_text=ocr_pdf_pages(data,missing)
-            for page_num,txt in ocr_text.items():
-                if txt.strip():output.append({'page':page_num,'text':txt,'ocr':True})
-        output.sort(key=lambda p:p['page'])
+
+            ocr_text = ocr_pdf_pages(data, missing)
+            for page_num, txt in ocr_text.items():
+                if txt.strip():
+                    output.append({"page": page_num, "text": txt, "ocr": True})
+        output.sort(key=lambda p: p["page"])
         if not output:
-            raise ValueError('No searchable text found. Enable OCR for scanned PDFs (requires Tesseract).')
-        return output,len(reader.pages)
-    if extension == '.docx':
+            raise ValueError(
+                "No searchable text found. Enable OCR for scanned PDFs (requires Tesseract)."
+            )
+        return output, len(reader.pages)
+    if extension == ".docx":
         from docx import Document
         from docx.oxml.ns import qn
+
         doc = Document(io.BytesIO(data))
-        output=[]
+        output = []
         for elem in doc.element.body.iterchildren():
-            if elem.tag==qn('w:p'):
-                s=''.join(elem.itertext()).strip()
-                if s:output.append(s)
-            elif elem.tag==qn('w:tbl'):
-                for row in elem.findall(qn('w:tr')):
-                    cells=[]
-                    for cell in row.findall(qn('w:tc')):
-                        cells.append(' '.join(x for x in cell.itertext() if x.strip()))
-                    if cells:output.append(' | '.join(cells))
-        if not output: raise ValueError('DOCX does not contain readable text.')
-        return [{'page':None,'text':'\n'.join(output)}],0
-    raise ValueError('Unsupported file extension.')
+            if elem.tag == qn("w:p"):
+                s = "".join(elem.itertext()).strip()
+                if s:
+                    output.append(s)
+            elif elem.tag == qn("w:tbl"):
+                for row in elem.findall(qn("w:tr")):
+                    cells = []
+                    for cell in row.findall(qn("w:tc")):
+                        cells.append(" ".join(x for x in cell.itertext() if x.strip()))
+                    if cells:
+                        output.append(" | ".join(cells))
+        if not output:
+            raise ValueError("DOCX does not contain readable text.")
+        return [{"page": None, "text": "\n".join(output)}], 0
+    raise ValueError("Unsupported file extension.")
+
 
 def make_chunks(pages, target=1400, overlap=180):
-    chunks=[]
-    remaining=MAX_CHARS
+    chunks = []
+    remaining = MAX_CHARS
     for p in pages:
-        original=p['text'][:max(0,remaining)]
-        remaining-=len(original)
-        if not original.strip(): continue
-        start=0
-        while start<len(original) and len(chunks)<MAX_CHUNKS:
-            end=min(len(original),start+target)
-            if end<len(original):
-                cutoff=max(original.rfind('\n',start+int(target*.6),end),original.rfind(' ',start+int(target*.6),end))
-                if cutoff>start: end=cutoff
-            value=original[start:end].strip()
-            if value:chunks.append({'page_number':p['page'],'content':value})
-            if end>=len(original):break
-            start=max(start+1,end-overlap)
-        if len(chunks)>=MAX_CHUNKS or remaining<=0:break
-    if not chunks: raise ValueError('No readable text could be chunked.')
+        original = p["text"][: max(0, remaining)]
+        remaining -= len(original)
+        if not original.strip():
+            continue
+        start = 0
+        while start < len(original) and len(chunks) < MAX_CHUNKS:
+            end = min(len(original), start + target)
+            if end < len(original):
+                cutoff = max(
+                    original.rfind("\n", start + int(target * 0.6), end),
+                    original.rfind(" ", start + int(target * 0.6), end),
+                )
+                if cutoff > start:
+                    end = cutoff
+            value = original[start:end].strip()
+            if value:
+                chunks.append({"page_number": p["page"], "content": value})
+            if end >= len(original):
+                break
+            start = max(start + 1, end - overlap)
+        if len(chunks) >= MAX_CHUNKS or remaining <= 0:
+            break
+    if not chunks:
+        raise ValueError("No readable text could be chunked.")
     return chunks
