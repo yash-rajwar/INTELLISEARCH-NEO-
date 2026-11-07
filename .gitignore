@@ -13,3 +13,4 @@ secret.key
 .vscode/
 *.zip
 .ruff_cache/
+probe_query.json
