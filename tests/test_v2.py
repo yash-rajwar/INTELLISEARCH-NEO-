@@ -4,7 +4,10 @@ import sys
 import unittest
 from pathlib import Path
 
+import os
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+os.environ.setdefault("LEGACY_ENABLED", "true")
 from intelligence import classify, summarize, compare_texts, explain, evidence_reply
 from extractors import text_pages
 from ocr import available

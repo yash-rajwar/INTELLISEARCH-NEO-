@@ -6,7 +6,10 @@ import sqlite3
 from pathlib import Path
 from unittest import TestCase, mock
 
+import os
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+os.environ.setdefault("LEGACY_ENABLED", "true")
 from config import PORT, UP_INDEX, V2_INDEX, SOURCES
 from search import indices_for, payload, search, fuse_ranked
 from es_client import ESFailure

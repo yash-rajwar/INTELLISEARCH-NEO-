@@ -3,7 +3,10 @@ import unittest
 from pathlib import Path
 from io import BytesIO
 
+import os
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+os.environ.setdefault("LEGACY_ENABLED", "true")
 from search import payload, search
 from extractors import text_pages, make_chunks
 from config import SOURCES

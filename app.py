@@ -27,6 +27,7 @@ from config import (
     PORT,
     ES_PASSWORD,
     BOOKS_DIR,
+    LEGACY_ENABLED,
     UPLOADS,
     MAX_FILE_BYTES,
     ALLOWED,
@@ -60,6 +61,7 @@ from v2_reader import v2_docs, v2_path, v2_doc
 from config import DATA, V2_INDEX
 
 app = Flask(__name__)
+app.jinja_env.globals["LEGACY_ENABLED"] = LEGACY_ENABLED
 app.config.update(
     MAX_CONTENT_LENGTH=MAX_FILE_BYTES + 2048,
     SECRET_KEY=os.environ.get("INTELLI_SECRET_KEY") or uuid.uuid4().hex,
@@ -547,7 +549,7 @@ def system_page():
 
 @app.get("/demo")
 def demo_page():
-    return render_template("demo.html", cases=DEMO_CASES)
+    return render_template("demo.html", cases=DEMO_CASES if LEGACY_ENABLED else [])
 
 
 @app.get("/api/status")
@@ -770,13 +772,13 @@ def suggest():
     if len(term) < 2:
         return jsonify({"suggestions": []})
     suggestions = []
-    for s in recent_queries(80) + [
+    for s in recent_queries(80) + ([
         "A scientist destroys an unfinished second creation",
         "A monarch hires a detective to recover an embarrassing photograph",
         "A girl attends a strange tea party with a hatter",
         "A mysterious ship arrives at Whitby",
         "blue lantern North Archive",
-    ]:
+    ] if LEGACY_ENABLED else []):
         if term in s.lower() and s not in suggestions:
             suggestions.append(s)
         if len(suggestions) >= 7:
