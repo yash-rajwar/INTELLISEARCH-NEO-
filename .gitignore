@@ -14,3 +14,4 @@ secret.key
 *.zip
 .ruff_cache/
 probe_query.json
+infer_probe.json
