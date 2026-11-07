@@ -81,9 +81,13 @@ class V3ContractTests(TestCase):
         with tempfile.TemporaryDirectory() as root:
             data=Path(root)
             db=data/'showcase.sqlite3'
-            with sqlite3.connect(db) as con:
+            con = sqlite3.connect(db)
+            try:
                 con.execute('CREATE TABLE uploads (doc_id TEXT,filename TEXT,file_type TEXT,status TEXT,created_at TEXT)')
                 con.execute('INSERT INTO uploads VALUES (?,?,?,?,?)',('a'*32,'original.pdf','.pdf','indexed','2026-10-14'))
+                con.commit()
+            finally:
+                con.close()
             with mock.patch.object(v2_reader,'V2_DATA',data):
                 got=v2_reader.v2_docs()
                 self.assertEqual(got[0]['filename'],'original.pdf')

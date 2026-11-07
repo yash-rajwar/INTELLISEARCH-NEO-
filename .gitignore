@@ -1,0 +1,15 @@
+venv/
+__pycache__/
+*.pyc
+.env
+data/
+corpus/files/
+eval/results/*
+!eval/results/.gitkeep
+*.sqlite3
+*.log
+secret.key
+.idea/
+.vscode/
+*.zip
+.ruff_cache/
