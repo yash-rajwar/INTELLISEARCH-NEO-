@@ -7,13 +7,13 @@ from config import build_sources
 
 
 class LegacySwitchTests(unittest.TestCase):
-    def test_off_leaves_only_uploads(self):
-        self.assertEqual(list(build_sources(False)), ["uploads"])
+    def test_off_leaves_the_corpus_and_uploads(self):
+        self.assertEqual(list(build_sources(False)), ["corpus", "uploads"])
 
-    def test_on_restores_all_five_in_the_old_order(self):
+    def test_on_restores_all_six_in_order(self):
         self.assertEqual(
             list(build_sources(True)),
-            ["passages", "books", "documents", "uploads", "uploads_v2"],
+            ["corpus", "passages", "books", "documents", "uploads", "uploads_v2"],
         )
 
     def test_legacy_index_names_never_appear_when_off(self):
