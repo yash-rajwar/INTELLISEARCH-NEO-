@@ -144,8 +144,8 @@ def check_optional():
 
 
 def run_checks():
-    rows = [(*python_status(sys.version_info), None)]
-    rows = [(rows[0][0], "Python", rows[0][1])]
+    status, detail = python_status(sys.version_info)
+    rows = [(status, "Python", detail)]
     rows += check_packages()
     rows += check_folders()
     rows += check_elasticsearch()
