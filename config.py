@@ -18,6 +18,8 @@ DB = DATA / "showcase.sqlite3"
 ES_URL = settings.es_url
 ES_USER = settings.es_user
 ES_PASSWORD = settings.es_password
+ES_INFERENCE_ID = settings.es_inference_id
+CORPUS_INDEX = settings.corpus_index
 
 HOST = "127.0.0.1"  # Intentionally never listen on external interfaces.
 PORT = settings.port
@@ -33,6 +35,7 @@ UP_INDEX = "intellisearch_showcase_chunks_v3"
 V2_INDEX = "intellisearch_showcase_chunks_v2"
 
 _ALL_SOURCES = {
+    "corpus": (CORPUS_INDEX, "Document corpus"),
     "passages": ("books_passages_phase2e_v1", "Indexed book passages"),
     "books": ("books_20", "Whole books"),
     "documents": ("demo_documents", "Demo documents"),

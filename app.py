@@ -6,6 +6,7 @@ import getpass
 import io
 import logging
 import re
+import threading
 import time
 import uuid
 from pathlib import Path
@@ -173,8 +174,8 @@ def search_page():
 @app.get("/compare")
 def compare():
     q = request.args.get("q", "").strip()[:501]
-    scope = request.args.get("scope", "passages")
-    scope = scope if scope in SCOPES else "passages"
+    scope = request.args.get("scope", "corpus")
+    scope = scope if scope in SCOPES else "corpus"
     outputs = {}
     if q:
         inference_timed_out = False
@@ -472,6 +473,15 @@ def health():
         return {"status": "degraded", "error": str(e)}, 503
 
 
+@app.get("/warmup")
+def warmup():
+    """Open this before presenting: one tiny ELSER call so the first search is not slow."""
+    try:
+        return {"status": "ok", "elser_ms": client().warm_up()}
+    except ESFailure as exc:
+        return {"status": "failed", "error": str(exc)[:300]}, 503
+
+
 # ---------------- V3 presentation & diagnostic tools (read-only) ----------------
 
 DEMO_CASES = [
@@ -529,13 +539,25 @@ def system_status():
         data["es_version"] = client().probe()
         data["counts"] = client().counts()
         endpoint = client().get_inference()
+        elser = client().elser_status()
         if endpoint:
             data["inference"] = {
-                "state": "Mapping configured; live inference untested",
+                "state": (
+                    "Semantic mapping found; ELSER deployment: "
+                    + elser["state"]
+                    + ". "
+                    + elser["note"]
+                ).strip(),
                 "endpoint": endpoint,
             }
         else:
             data["inference"] = {"state": "No semantic mapping"}
+        data["elser"] = elser
+        try:
+            data["license"] = client().license_info()
+        except ESFailure as err:
+            data["license"] = {"error": str(err)[:200]}
+        data["corpus"] = client().corpus_status()
     except (ESFailure, KeyError, TypeError) as err:
         data["es_error"] = str(err)
     try:
@@ -573,7 +595,7 @@ def semantic_check():
         r = search(
             client(),
             "A scientist destroys an unfinished second creation",
-            "passages",
+            "corpus",
             "semantic",
             size=1,
         )
@@ -590,9 +612,9 @@ def semantic_check():
 @app.route("/ask", methods=["GET", "POST"])
 def ask_documents():
     question = (request.values.get("question") or "").strip()[:500]
-    scope = request.values.get("scope", "passages")
+    scope = request.values.get("scope", "corpus")
     if scope not in SCOPES:
-        scope = "passages"
+        scope = "corpus"
     mode = request.values.get("mode", "keyword")
     if mode not in MODES:
         mode = "keyword"
@@ -832,5 +854,13 @@ if __name__ == "__main__":
         print("Elasticsearch version:", ES_CLIENT.probe(), flush=True)
     except ESFailure as e:
         print("Elasticsearch unavailable:", e, flush=True)
+
+    def _warm_up_in_background():
+        try:
+            log.info("ELSER warm-up finished in %s ms", ES_CLIENT.warm_up())
+        except ESFailure as exc:
+            log.warning("ELSER warm-up failed: %s", exc)
+
+    threading.Thread(target=_warm_up_in_background, daemon=True).start()
     print("V3 showcase: http://127.0.0.1:5003 | original, V1 and V2 unchanged", flush=True)
     app.run(host=HOST, port=PORT, debug=False, threaded=True, use_reloader=False)
