@@ -21,3 +21,4 @@ data/
 .env
 __pycache__/
 *.part
+eval/results_smoke/

@@ -135,6 +135,7 @@ def _display_hits(rows):
                 "title": title,
                 "author": str(src.get("author") or ""),
                 "passage": chunk[:750],
+                "text": chunk,  # full chunk, used by the evaluation harness
                 "score": hit.get("_score"),
                 "book_id": book,
                 "page": page,
