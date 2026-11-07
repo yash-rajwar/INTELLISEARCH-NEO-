@@ -1,7 +1,7 @@
 """Read-only source text access for uploaded documents and original cleaned books."""
 
 import re
-from config import PROJECT, UPLOADS, BOOK_FILES, BOOK_NAMES, DATA, V2_DATA
+from config import BOOKS_DIR, UPLOADS, BOOK_FILES, BOOK_NAMES, DATA, V2_DATA
 from store import upload_doc, all_docs
 from extractors import text_pages
 from v2_reader import v2_docs, v2_doc, v2_path
@@ -28,7 +28,7 @@ def read_source(ref):
         bid = ref[5:]
         if bid not in BOOK_FILES:
             raise ValueError("Unknown book selection.")
-        path = PROJECT / "clean_books" / BOOK_FILES[bid]
+        path = BOOKS_DIR / BOOK_FILES[bid]
         if not path.is_file():
             raise ValueError("Clean source book not present on disk.")
         return {

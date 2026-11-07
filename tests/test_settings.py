@@ -75,6 +75,11 @@ class SettingsTests(unittest.TestCase):
         s = load_settings(env={"BOOKS_DIR": "./data/books"}, env_file=None)
         self.assertTrue(s.books_dir.is_absolute())
 
+    def test_v2_data_dir_is_optional(self):
+        self.assertIsNone(load_settings(env={}, env_file=None).v2_data_dir)
+        s = load_settings(env={"V2_DATA_DIR": "./old_v2"}, env_file=None)
+        self.assertTrue(s.v2_data_dir.is_absolute())
+
 
 if __name__ == "__main__":
     unittest.main()

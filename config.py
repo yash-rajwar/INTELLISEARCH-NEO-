@@ -1,22 +1,33 @@
-"""Config for a local-only, isolated IntelliSearch demo."""
+"""Paths and constants for IntelliSearch.
 
-import os
+Values that a user may change come from settings.py (environment variables and
+an optional .env file). Names here are kept so the other modules do not change.
+"""
+
 from pathlib import Path
 
+from settings import load_settings
+
+settings = load_settings()
+
 ROOT = Path(__file__).resolve().parent
-PROJECT = ROOT.parent
-DATA = ROOT / "data"  # V3 has separate local metadata and uploads.
+DATA = settings.data_dir
 UPLOADS = DATA / "uploads"
 DB = DATA / "showcase.sqlite3"
-ES_URL = os.environ.get("INTELLI_ES_URL", "http://127.0.0.1:9200").rstrip("/")
-ES_USER = os.environ.get("INTELLI_ES_USER", "elastic")
-ES_PASSWORD = os.environ.get("INTELLI_ES_PASSWORD", "")
+
+ES_URL = settings.es_url
+ES_USER = settings.es_user
+ES_PASSWORD = settings.es_password
+
 HOST = "127.0.0.1"  # Intentionally never listen on external interfaces.
-PORT = 5003
+PORT = settings.port
+
+# Optional folders. If they do not exist the features that need them are simply unavailable.
+BOOKS_DIR = settings.books_dir or (DATA / "books")
+V2_DATA = settings.v2_data_dir or (DATA / "v2")
+
 UP_INDEX = "intellisearch_showcase_chunks_v3"
 V2_INDEX = "intellisearch_showcase_chunks_v2"
-V2_ROOT = PROJECT / "intellisearch_showcase_v2"
-V2_DATA = V2_ROOT / "data"
 SOURCES = {
     "passages": ("books_passages_phase2e_v1", "Indexed book passages"),
     "books": ("books_20", "Whole books"),

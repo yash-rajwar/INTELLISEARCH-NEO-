@@ -26,7 +26,7 @@ from config import (
     HOST,
     PORT,
     ES_PASSWORD,
-    PROJECT,
+    BOOKS_DIR,
     UPLOADS,
     MAX_FILE_BYTES,
     ALLOWED,
@@ -356,7 +356,7 @@ def uploaded_v2(doc_id):
 def book(book_id):
     if book_id not in BOOK_FILES:
         abort(404)
-    p = PROJECT / "clean_books" / BOOK_FILES[book_id]
+    p = BOOKS_DIR / BOOK_FILES[book_id]
     if not p.is_file():
         abort(404)
     try:
@@ -393,7 +393,7 @@ def context(index, hit_id):
     end = src.get("end_line")
     source_lines = []
     if book_id in BOOK_FILES and isinstance(start, int):
-        p = PROJECT / "clean_books" / BOOK_FILES[book_id]
+        p = BOOKS_DIR / BOOK_FILES[book_id]
         if p.is_file():
             lines = p.read_text(encoding="utf-8-sig").splitlines()
             lo = max(1, start - 12)

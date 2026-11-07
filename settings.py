@@ -74,6 +74,7 @@ class Settings:
     corpus_index: str
     legacy_enabled: bool
     books_dir: Optional[Path]
+    v2_data_dir: Optional[Path]
     data_dir: Path
     host: str
     port: int
@@ -95,6 +96,7 @@ def load_settings(env: Optional[dict] = None, env_file: Optional[Path] = ROOT / 
     merged.update(os.environ if env is None else env)  # real environment wins
 
     books = _text(merged, "BOOKS_DIR")
+    v2 = _text(merged, "V2_DATA_DIR")
     return Settings(
         # INTELLI_ES_* are the older names; the new names win when both are set.
         es_url=(_text(merged, "ES_URL") or _text(merged, "INTELLI_ES_URL") or "http://127.0.0.1:9200").rstrip("/"),
@@ -104,6 +106,7 @@ def load_settings(env: Optional[dict] = None, env_file: Optional[Path] = ROOT / 
         corpus_index=_text(merged, "CORPUS_INDEX", "intellisearch_corpus_v1"),
         legacy_enabled=_bool(merged, "LEGACY_ENABLED", False),
         books_dir=_path(books) if books else None,
+        v2_data_dir=_path(v2) if v2 else None,
         data_dir=_path(_text(merged, "DATA_DIR", "./data")),
         host=_text(merged, "HOST", "127.0.0.1"),
         port=_int(merged, "PORT", 5003),
