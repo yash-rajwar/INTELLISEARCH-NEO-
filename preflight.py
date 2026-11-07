@@ -13,9 +13,9 @@ def main():
     failures = []
     if sys.version_info < (3, 10):
         failures.append("Python 3.10 or newer required")
-    for name in ("flask", "requests", "pypdf", "docx", "fitz"):
+    for name in ("flask", "requests", "pypdf", "docx", "pymupdf"):
         try:
-            m = importlib.import_module(name)
+            importlib.import_module(name)
             print("  " + name + ": installed")
         except ImportError:
             failures.append("Missing Python package " + name)

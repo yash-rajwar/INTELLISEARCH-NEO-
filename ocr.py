@@ -6,7 +6,7 @@ from pathlib import Path
 
 def available():
     try:
-        import fitz
+        import pymupdf  # noqa: F401  (only checking that it is installed)
     except ImportError:
         return False, "PyMuPDF is missing."
     tessdata = os.environ.get("TESSDATA_PREFIX", "").strip()
@@ -30,10 +30,10 @@ def ocr_pdf_pages(data, missing_page_numbers):
         raise ValueError("OCR unavailable: " + tessdata)
     if len(missing_page_numbers) > 40:
         raise ValueError("At most 40 scanned pages per PDF can be OCR processed in this showcase.")
-    import fitz
+    import pymupdf
 
     output = {}
-    with fitz.open(stream=data, filetype="pdf") as doc:
+    with pymupdf.open(stream=data, filetype="pdf") as doc:
         for number in missing_page_numbers:
             try:
                 page = doc[number - 1]
