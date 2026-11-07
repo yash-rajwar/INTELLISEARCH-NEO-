@@ -1,10 +1,8 @@
 """Run before first showcase launch. No credentials, network modifications or indexing."""
 
 import importlib
-import os
 import socket
 import sys
-from pathlib import Path
 from config import PROJECT, ROOT, BOOK_FILES, PORT
 
 

@@ -4,7 +4,7 @@ from pathlib import Path
 from io import BytesIO
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from search import payload, indices_for, search
+from search import payload, search
 from extractors import text_pages, make_chunks
 from config import SOURCES
 from es_client import ES

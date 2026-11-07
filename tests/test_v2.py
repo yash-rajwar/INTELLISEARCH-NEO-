@@ -5,8 +5,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from intelligence import keywords, classify, summarize, compare_texts, explain, evidence_reply
-from llm import enabled
+from intelligence import classify, summarize, compare_texts, explain, evidence_reply
 from extractors import text_pages
 from ocr import available
 from config import PORT, UP_INDEX

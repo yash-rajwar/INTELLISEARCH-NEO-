@@ -9,7 +9,6 @@ import re
 import time
 import uuid
 from pathlib import Path
-from datetime import datetime, timezone
 from flask import (
     Flask,
     Response,
@@ -23,12 +22,10 @@ from flask import (
     session,
     jsonify,
 )
-from werkzeug.exceptions import RequestEntityTooLarge
 from config import (
     HOST,
     PORT,
     ES_PASSWORD,
-    ROOT,
     PROJECT,
     UPLOADS,
     MAX_FILE_BYTES,
@@ -48,7 +45,6 @@ from store import (
     now,
     save_insights,
     all_insights,
-    get_insights,
     add_bookmark,
     remove_bookmark,
     bookmarks,
@@ -61,7 +57,7 @@ from intelligence import classify, summarize, compare_texts, explain, evidence_r
 from documents import choices, read_source
 from llm import enabled as llm_enabled, generate as llm_generate
 from v2_reader import v2_docs, v2_path, v2_doc
-from config import DATA, V2_INDEX, PORT
+from config import DATA, V2_INDEX
 
 app = Flask(__name__)
 app.config.update(
@@ -816,7 +812,6 @@ def saved_passages():
 
 
 if __name__ == "__main__":
-    from config import ES_URL
 
     password = ES_PASSWORD or getpass.getpass("Elasticsearch password (elastic user): ")
     ES_CLIENT = ES(password=password)

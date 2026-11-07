@@ -4,7 +4,7 @@ on unmapped collections. Single-index hybrid uses Elasticsearch native RRF.
 """
 
 from time import perf_counter
-from config import SOURCES, UP_INDEX, V2_INDEX, BOOK_NAMES
+from config import SOURCES, BOOK_NAMES
 from es_client import ESFailure
 
 MODES = {

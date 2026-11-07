@@ -1,7 +1,6 @@
 """Allowlisted Elasticsearch operations; all legacy indexes remain strictly read-only."""
 
 import json
-import time
 import requests
 from urllib.parse import quote
 from config import ES_URL, ES_USER, ES_PASSWORD, UP_INDEX, SOURCES

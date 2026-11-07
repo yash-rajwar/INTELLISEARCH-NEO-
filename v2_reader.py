@@ -4,7 +4,6 @@ Never opens V2 SQLite in write mode and never modifies V2 files or index.
 
 import re
 import sqlite3
-from pathlib import Path
 from config import V2_DATA
 
 

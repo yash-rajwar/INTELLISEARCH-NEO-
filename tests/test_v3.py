@@ -52,7 +52,7 @@ class MixedIndexMock:
                 }
             }
         if path.endswith("/_search"):
-            if path == f"books_passages_phase2e_v1/_search":
+            if path == "books_passages_phase2e_v1/_search":
                 if self.fail_sem:
                     raise ESFailure("Elasticsearch timed out after 65s")
                 rows = [hit("s1")]

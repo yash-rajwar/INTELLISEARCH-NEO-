@@ -1,7 +1,6 @@
 """Extract trusted plain text from uploaded public/local samples. Never execute file contents."""
 
 import io
-from pathlib import Path
 from config import MAX_CHARS, MAX_CHUNKS, MAX_PAGES
 
 
