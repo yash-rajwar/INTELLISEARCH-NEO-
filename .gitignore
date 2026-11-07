@@ -15,3 +15,9 @@ secret.key
 .ruff_cache/
 probe_query.json
 infer_probe.json
+corpus/files/
+venv/
+data/
+.env
+__pycache__/
+*.part
