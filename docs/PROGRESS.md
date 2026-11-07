@@ -8,7 +8,7 @@ _Last updated: 2026-11-07 by session 1_
 | 00 | Safety net (branch, tests, .gitignore) | done | ad86be4 | venv is Python 3.12.10; 32/32 tests pass |
 | 16a | Formatting-only commit | done | 84cbce0 | ruff format, 15 files |
 | 16b (part) | Unused imports, pymupdf import | done | 83e65b1, c5f2687 | |
-| 01 | Portable configuration | not started | | next |
+| 01 | Portable configuration | done | 263c443, a3d7711, bbb1d5e | settings.py, BOOKS_DIR, LEGACY_ENABLED switch (off by default), preflight table; 49 tests pass |
 | 02 | App factory, server, secrets, logging | not started | | |
 | 03 | ES client hardening and caching | not started | | |
 | 05 | Chunker v2 and dynamic limits | not started | | |
@@ -27,6 +27,7 @@ _Last updated: 2026-11-07 by session 1_
 ## Environment facts (confirmed)
 - Elasticsearch version: 9.0.0 (Lucene 10.1.0), single node, Docker (es01), Kibana 9.0.0
 - License: trial, active, issued 2026-11-07 08:02 UTC, expires 2026-12-07 08:02 UTC; eligible_to_start_trial=false (expected)
+- ELSER search FAILS: 'Failed to connect to pytorch process' (500), after an earlier 10 s start timeout. Cause under investigation (logs requested).
 - ELSER endpoint .elser-2-elasticsearch exists; adaptive allocations min 0 (scales to zero, slow first query); its own chunking: sentence, max 250, overlap 1
 - Docker memory limit: 3.77 GiB total (es01 uses ~1.5 GiB, kibana ~0.6 GiB). Probably too low for ELSER
 - First ELSER request via Kibana Dev Tools timed out (Kibana 30 s gateway limit). Use curl with --max-time
