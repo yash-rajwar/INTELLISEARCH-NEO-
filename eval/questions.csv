@@ -1,0 +1,35 @@
+id,split,type,question,expected_doc,expected_page,expected_lines,gold_span,notes
+Q01,dev,keyword,"three-way handshake","RFC 9293: Transmission Control Protocol",,,,
+Q02,dev,keyword,"0-RTT early data replay","RFC 8446: TLS 1.3",,,,
+Q03,dev,keyword,"idempotent methods","RFC 9110: HTTP Semantics",,,,
+Q04,dev,keyword,"Public Information Officer","Right to Information Act, 2005 (India) with DoPT Guide",,,,
+Q05,dev,keyword,"Data Fiduciary","Digital Personal Data Protection Act, 2023 (India)",,,,
+Q06,dev,keyword,"section 69A blocking of information","Information Technology Act, 2000 (India)",,,,
+Q07,dev,keyword,"account management control AC-2","NIST SP 800-53 Rev. 5: Security and Privacy Controls | NIST SP 800-171 Rev. 3: Protecting CUI",,,,two documents accepted
+Q08,test,keyword,"Govern Identify Protect Detect Respond Recover","NIST Cybersecurity Framework 2.0 | NIST SP 800-61 Rev. 3: Incident Response",,,,two documents accepted
+Q09,test,keyword,"technology readiness level","NASA Systems Engineering Handbook",,,,
+Q10,test,keyword,"Govern Map Measure Manage","NIST AI Risk Management Framework 1.0",,,,
+Q11,dev,conceptual,"what should an organization do after discovering an intruder in its network","NIST SP 800-61 Rev. 3: Incident Response",,,,different vocabulary
+Q12,dev,conceptual,"a citizen asks the government for official records and gets no reply in time","Right to Information Act, 2005 (India) with DoPT Guide",,,,different vocabulary
+Q13,dev,conceptual,"a company must tell people why it collects their personal information and get their agreement","Digital Personal Data Protection Act, 2023 (India)",,,,different vocabulary
+Q14,dev,conceptual,"the government can order websites to hide content for the sake of national security","Information Technology Act, 2000 (India)",,,,different vocabulary
+Q15,dev,conceptual,"how a secure web connection keeps eavesdroppers from reading the traffic","RFC 8446: TLS 1.3",,,,different vocabulary
+Q16,dev,conceptual,"what happens when the receiver cannot keep up with the data the sender is pushing","RFC 9293: Transmission Control Protocol",,,,different vocabulary
+Q17,dev,conceptual,"making sure the finished system really meets what the customer needs","NASA Systems Engineering Handbook",,,,different vocabulary
+Q18,dev,conceptual,"protecting sensitive government information that is held by contractors","NIST SP 800-171 Rev. 3: Protecting CUI",,,,different vocabulary
+Q19,test,conceptual,"harms that artificial intelligence systems can cause to people and society","NIST AI Risk Management Framework 1.0",,,,different vocabulary
+Q20,test,conceptual,"a king hires a detective to get back an embarrassing photograph","The Adventures of Sherlock Holmes (Conan Doyle)",,,,different vocabulary
+Q21,dev,long,"How does the server decide which version of a resource to send when the client states several preferences?","RFC 9110: HTTP Semantics",,,,
+Q22,dev,long,"What does the creature demand from his creator before he promises to leave humankind alone?","Frankenstein (Mary Shelley)",,,,
+Q23,dev,long,"Which passage says that all warfare is based on deception?","The Art of War (Sun Tzu, tr. Giles)",,,,
+Q24,test,long,"How does the traveller describe seeing the owner of the castle climbing down the outer wall?","Dracula (Bram Stoker)",,,,
+Q25,test,long,"Why does Elizabeth refuse the first marriage proposal she gets from the proud gentleman?","Pride and Prejudice (Jane Austen)",,,,
+Q26,dev,typo,"incidnet response containment eradication","NIST SP 800-61 Rev. 3: Incident Response",,,,
+Q27,dev,typo,"transmision control protocal window","RFC 9293: Transmission Control Protocol",,,,
+Q28,dev,typo,"informaton technology act intermediry liability","Information Technology Act, 2000 (India)",,,,
+Q29,test,typo,"data prinicpal rights and duties","Digital Personal Data Protection Act, 2023 (India)",,,,
+Q30,test,typo,"sytems engineering lifecyle phases","NASA Systems Engineering Handbook",,,,
+Q31,dev,long,"What is the recommended dose of ibuprofen for young children?",,,,,no answer in the corpus
+Q32,dev,long,"Who won the football World Cup in 2022?",,,,,no answer in the corpus
+Q33,test,long,"What is the penalty for tax evasion under the Income Tax Act?",,,,,no answer in the corpus
+Q34,test,long,"How do I configure an ingress controller in Kubernetes?",,,,,no answer in the corpus
