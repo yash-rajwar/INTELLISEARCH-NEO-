@@ -7,7 +7,7 @@ _Last updated: 2026-11-07 by session 1_
 |----|-------|--------|--------|-------|
 | 00 | Safety net (branch, tests, .gitignore) | done | ad86be4 | venv is Python 3.12.10; 32/32 tests pass |
 | 16a | Formatting-only commit | done | 84cbce0 | ruff format, 15 files |
-| 16b (part) | Unused imports, pymupdf import | done | 83e65b1 + next | |
+| 16b (part) | Unused imports, pymupdf import | done | 83e65b1, c5f2687 | |
 | 01 | Portable configuration | not started | | next |
 | 02 | App factory, server, secrets, logging | not started | | |
 | 03 | ES client hardening and caching | not started | | |
