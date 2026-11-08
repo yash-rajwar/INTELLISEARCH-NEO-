@@ -5,3 +5,9 @@ target-version = "py310"
 [tool.ruff.lint]
 select = ["E", "F", "I"]
 ignore = ["E701", "E702", "E401"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+markers = [
+    "live: needs a running Elasticsearch; skipped unless RUN_LIVE=1",
+]
