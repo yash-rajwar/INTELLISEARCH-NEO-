@@ -218,3 +218,13 @@ def remove_upload(doc_id):
         c.execute("DELETE FROM uploads WHERE doc_id = ?", (doc_id,))
         c.execute("DELETE FROM insights WHERE doc_id = ?", (doc_id,))
         c.execute("DELETE FROM upload_hashes WHERE doc_id = ?", (doc_id,))
+
+
+def mark_interrupted():
+    """Rows still 'extracting' at start-up belong to a run that was cut off by a restart."""
+    with db() as c:
+        cur = c.execute(
+            "UPDATE uploads SET status='error', error=? WHERE status='extracting'",
+            ("Interrupted: the app was restarted while this file was being indexed.",),
+        )
+        return cur.rowcount

@@ -56,6 +56,7 @@ from store import (
     remember_hash,
     forget_hash,
     remove_upload,
+    mark_interrupted,
 )
 from extractors import text_pages, make_chunks
 from es_client import ES, ESFailure
@@ -78,6 +79,7 @@ app.config.update(
     SECRET_KEY=load_secret_key(DATA),
 )
 init_v2_db()
+mark_interrupted()
 UPLOADS.mkdir(parents=True, exist_ok=True)
 # Created at import time so "flask run" and other servers get a client too.
 # ES() only builds an HTTP session; it does not contact Elasticsearch.
@@ -291,6 +293,24 @@ def upload():
     enable_semantic = request.form.get("semantic") == "on"
     enable_ocr = request.form.get("ocr") == "on" and ext == ".pdf"
     save_doc(doc_id, filename, ext, len(data), status="extracting")
+    remember_hash(digest, doc_id)  # a failed upload frees the hash again (see cleanup)
+    threading.Thread(
+        target=_process_upload,
+        args=(doc_id, filename, ext, data, enable_semantic, enable_ocr),
+        name="upload-" + doc_id[:8],
+        daemon=True,
+    ).start()
+    flash(
+        f"Upload started for {filename}. Indexing runs in the background; "
+        "this page refreshes by itself.",
+        "success",
+    )
+    return redirect(url_for("library"))
+
+
+def _process_upload(doc_id, filename, ext, data, enable_semantic, enable_ocr):
+    """Extract, chunk and index one upload. Runs in a background thread and never raises."""
+    target = UPLOADS / (doc_id + ext)
     try:
         pages, page_count = text_pages(data, ext, ocr=enable_ocr)
         chunks = make_chunks(pages)
@@ -317,9 +337,7 @@ def upload():
         )
         c = client()
         has_sem = c.make_upload_index()
-        c.bulk_upload(
-            doc_id, documents, semantic=False
-        )  # Always secure usable lexical baseline first.
+        c.bulk_upload(doc_id, documents, semantic=False)  # usable keyword search comes first
         status = "indexed"
         sem = "not_requested"
         info = ""
@@ -328,7 +346,7 @@ def upload():
                 c.bulk_upload(doc_id, documents, semantic=True)
                 sem = "indexed"
             except ESFailure as exc:
-                # Preserve lexical retrieval even when ELSER inference is busy.
+                # Keep keyword search working even when ELSER is busy.
                 try:
                     c.bulk_upload(doc_id, documents, semantic=False)
                 except ESFailure:
@@ -342,22 +360,14 @@ def upload():
             sem = "unavailable"
             info = "Semantic endpoint not available; indexed for BM25."
         save_doc(doc_id, filename, ext, len(data), len(chunks), page_count, status, sem, info)
-        remember_hash(digest, doc_id)
         classification = classify("\n".join(x["text"] for x in pages)[:75000])
         ocr_pages = sum(1 for p in pages if p.get("ocr"))
         save_insights(doc_id, classification["category"], classification["tags"], ocr_pages)
-        flash(
-            f"Indexed {len(chunks)} passages from {filename}. Classification: {classification['category']}."
-            + " "
-            + info,
-            "success",
-        )
-    except (ValueError, RuntimeError, OSError, ESFailure, KeyError, ImportError) as exc:
+        log.info("upload finished: %s (%d passages)", filename, len(chunks))
+    except Exception as exc:  # noqa: BLE001 - a background thread must record any failure
         log.warning("upload failed for %s: %s", filename, exc)
         save_doc(doc_id, filename, ext, len(data), status="error", error=str(exc))
         _cleanup_failed_upload(doc_id, ext)
-        flash("Upload could not be indexed: " + str(exc)[:450], "error")
-    return redirect(url_for("library"))
 
 
 def _remove_upload_files(doc_id, ext):
@@ -386,6 +396,9 @@ def delete_upload_route(doc_id):
     d = upload_doc(doc_id)
     if not d:
         abort(404)
+    if d["status"] == "extracting":
+        flash("This file is still being indexed. Wait for it to finish, then delete it.", "error")
+        return redirect(url_for("library"))
     try:
         removed = client().delete_upload_chunks(doc_id)
     except ESFailure as exc:

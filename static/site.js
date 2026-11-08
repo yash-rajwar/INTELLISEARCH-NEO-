@@ -31,3 +31,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  apply(on);
  btn.addEventListener('click',()=>{on=!on;apply(on);try{localStorage.setItem('presenter',on?'1':'0');}catch(e){}});
 });
+document.addEventListener('DOMContentLoaded',()=>{
+ // While a file is still being indexed in the background, reload the library every 3 seconds.
+ if(document.querySelector('[data-busy]'))setTimeout(()=>location.reload(),3000);
+});
