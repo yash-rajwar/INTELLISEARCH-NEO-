@@ -64,6 +64,7 @@ from search import MODES, SCOPES, search, result_limit, neighbour_hit_ids
 from intelligence import classify, summarize, compare_texts, explain, evidence_reply
 from longdoc import summarize_long, aligned_passages
 from comparison import annotate
+from parallel import run_compare
 from documents import choices, read_source
 from llm import enabled as llm_enabled, generate as llm_generate, status as llm_status
 from askcheck import check_citations, no_term_overlap
@@ -215,29 +216,11 @@ def compare():
     scope = scope if scope in SCOPES else "corpus"
     outputs = {}
     if q:
-        inference_timed_out = False
-        for mode in ("keyword", "semantic", "hybrid", "weighted"):
-            if inference_timed_out and mode in ("hybrid", "weighted"):
-                outputs[mode] = {
-                    "result": None,
-                    "error": "Skipped to avoid repeated ELSER timeouts. BM25 comparison is still available.",
-                }
-                continue
-            try:
-                outputs[mode] = {"result": search(client(), q, scope, mode, size=5), "error": ""}
-                log_query(
-                    q,
-                    scope,
-                    mode,
-                    len(outputs[mode]["result"]["hits"]),
-                    outputs[mode]["result"]["elapsed_ms"],
-                    "ok",
-                )
-            except (ESFailure, ValueError) as exc:
-                outputs[mode] = {"result": None, "error": str(exc)}
-                if mode == "semantic" and ("timed out" in str(exc).lower() or "408" in str(exc)):
-                    inference_timed_out = True
-                log_query(q, scope, mode, 0, 0, "error")
+        outputs = run_compare(
+            lambda mode: search(client(), q, scope, mode, size=5),
+            lambda mode, hits, ms, status: log_query(q, scope, mode, hits, ms, status),
+            (ESFailure, ValueError),
+        )
     summary = annotate(outputs) if outputs else {}
     return render_template("compare.html", q=q, scope=scope, outputs=outputs, summary=summary)
 
