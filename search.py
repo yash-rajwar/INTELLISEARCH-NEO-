@@ -388,3 +388,18 @@ def result_limit(raw, default=30, maximum=150):
     except (TypeError, ValueError):
         return default
     return max(default, min(n, maximum))
+
+
+def neighbour_hit_ids(index, document_id, chunk_index):
+    """IDs of the previous and next passage of one document.
+
+    Corpus passages are numbered with 5 digits (abc_00090), uploads with 4 (abc_0090).
+    """
+    from config import CORPUS_INDEX
+
+    try:
+        n = int(chunk_index)
+    except (TypeError, ValueError):
+        n = 0
+    width = 5 if index == CORPUS_INDEX else 4
+    return [(k, f"{document_id}_{str(k).zfill(width)}") for k in (n - 1, n + 1) if k >= 0]

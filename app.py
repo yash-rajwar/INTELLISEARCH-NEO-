@@ -59,12 +59,12 @@ from store import (
 )
 from extractors import text_pages, make_chunks
 from es_client import ES, ESFailure
-from search import MODES, SCOPES, search, result_limit
+from search import MODES, SCOPES, search, result_limit, neighbour_hit_ids
 from intelligence import classify, summarize, compare_texts, explain, evidence_reply
 from documents import choices, read_source
 from llm import enabled as llm_enabled, generate as llm_generate
 from v2_reader import v2_docs, v2_path, v2_doc
-from config import DATA, V2_INDEX
+from config import DATA, V2_INDEX, CORPUS_INDEX
 from bootstrap import load_secret_key, setup_logging
 from badge import license_chip
 
@@ -493,16 +493,20 @@ def context(index, hit_id):
                 for i in range(lo, hi + 1)
             ]
     nearby = []
-    if index in (UP_INDEX, V2_INDEX) and src.get("document_id") is not None:
-        n = src.get("chunk_index", 0)
-        for k in (n - 1, n + 1):
-            if k >= 0:
-                try:
-                    other = client().get_hit(index, src["document_id"] + "_" + str(k).zfill(4))
-                    if other:
-                        nearby.append({"index": k, "text": other.get("content", "")[:1800]})
-                except ESFailure:
-                    pass
+    if index in (UP_INDEX, V2_INDEX, CORPUS_INDEX) and src.get("document_id") is not None:
+        for k, other_id in neighbour_hit_ids(index, src["document_id"], src.get("chunk_index", 0)):
+            try:
+                other = client().get_hit(index, other_id)
+                if other:
+                    nearby.append(
+                        {
+                            "index": k,
+                            "page": other.get("page_number"),
+                            "text": other.get("content", "")[:1800],
+                        }
+                    )
+            except ESFailure:
+                pass
     return render_template(
         "context.html",
         src=src,
