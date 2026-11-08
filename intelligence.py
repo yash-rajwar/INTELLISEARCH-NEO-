@@ -150,6 +150,7 @@ def explain(query, passage, method):
         "semantic": "ELSER sparse semantic retrieval ranks documents by inferred associations; visible word overlap is not an explanation of its internal model.",
         "hybrid": "RRF combines separate keyword and semantic ranking positions, rather than comparing their raw scores.",
         "weighted": "Weighted RRF combines keyword and semantic ranking positions, with the semantic branch weighted 1.5 in this showcase.",
+        "fuzzy": "Fuzzy keyword search is BM25 that also accepts words with a few letters wrong: up to 1 letter for words of 3 to 5 letters, up to 2 for longer words. The first letter must match.",
     }
     return {
         "matched": matched[:18],
