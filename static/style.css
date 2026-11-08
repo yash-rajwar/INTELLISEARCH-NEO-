@@ -41,3 +41,12 @@ html.presenter .excerpt{font-size:1.05rem;line-height:1.7}
 .pill.keyword{background:#eceff4;color:#4a5568}
 .comparison-hit .pill{margin-left:8px}
 .comparison-hit p{font-size:.86rem;color:#4a5568}
+
+/* Batch 15: navigation groups, skip link, sidebar fit */
+.skip-link{position:absolute;left:-9999px;top:0;background:#fff;color:#24314c;padding:10px 14px;z-index:100;border-radius:0 0 8px 0;font-weight:700}
+.skip-link:focus{left:0}
+.sidebar{overflow-y:auto}
+.nav-label{margin:14px 14px 4px;font-size:.66rem;font-weight:800;letter-spacing:.12em;color:#9fb0cf;text-transform:uppercase}
+main:focus{outline:none}
+@media(max-height:780px){.sidebar{padding-top:18px;padding-bottom:12px}.sidebar nav{margin-top:14px;gap:0}.sidebar nav a{padding:7px 13px;font-size:.86rem}.nav-label{margin-top:10px}}
+@media(max-width:770px){.nav-label{display:none}}
