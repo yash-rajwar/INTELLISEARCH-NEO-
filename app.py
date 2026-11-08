@@ -63,6 +63,7 @@ from es_client import ES, ESFailure
 from search import MODES, SCOPES, search, result_limit, neighbour_hit_ids
 from intelligence import classify, summarize, compare_texts, explain, evidence_reply
 from longdoc import summarize_long, aligned_passages
+from comparison import annotate
 from documents import choices, read_source
 from llm import enabled as llm_enabled, generate as llm_generate, status as llm_status
 from askcheck import check_citations, no_term_overlap
@@ -237,7 +238,8 @@ def compare():
                 if mode == "semantic" and ("timed out" in str(exc).lower() or "408" in str(exc)):
                     inference_timed_out = True
                 log_query(q, scope, mode, 0, 0, "error")
-    return render_template("compare.html", q=q, scope=scope, outputs=outputs)
+    summary = annotate(outputs) if outputs else {}
+    return render_template("compare.html", q=q, scope=scope, outputs=outputs, summary=summary)
 
 
 @app.get("/library")
