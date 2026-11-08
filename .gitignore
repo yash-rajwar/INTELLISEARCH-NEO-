@@ -27,3 +27,4 @@ agg.json
 for_claude*.txt
 patch_*.py
 collect_files.py
+eval/results_fuzzy/

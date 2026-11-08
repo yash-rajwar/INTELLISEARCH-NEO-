@@ -12,6 +12,7 @@ MODES = {
     "semantic": "Semantic (ELSER, meaning-based)",
     "hybrid": "Hybrid (keyword + semantic, RRF)",
     "weighted": "Weighted hybrid (BM25 1.0 / ELSER 1.5, fused locally)",
+    "fuzzy": "Fuzzy keyword (BM25, tolerates typos)",
 }
 SCOPES = {"all": "All collections", **{k: v[1] for k, v in SOURCES.items()}}
 
@@ -31,6 +32,7 @@ def payload(query, mode, size=12, book_id="", doc_type="", semantic_available=Tr
             "query": query,
             "fields": ["content^2", "title^2", "author", "text", "body", "summary"],
             "type": "best_fields",
+            **({"fuzziness": "AUTO"} if mode == "fuzzy" else {}),
         }
     }
     qsem = {"match": {"content_semantic": {"query": query}}}
@@ -44,7 +46,7 @@ def payload(query, mode, size=12, book_id="", doc_type="", semantic_available=Tr
         return {"bool": {"must": [q], "filter": filters}} if filters else q
 
     p = {"size": size, "_source": {"excludes": ["content_semantic"]}, "track_total_hits": True}
-    if mode == "keyword" or not semantic_available:
+    if mode in ("keyword", "fuzzy") or not semantic_available:
         p["query"] = apply(qlex)
     elif mode == "semantic":
         p["query"] = apply(qsem)
@@ -249,7 +251,7 @@ def search(client, q, scope="all", mode="keyword", book_id="", doc_type="", size
             "mode_used": mode,
             "indices": [],
         }
-    sem = semantic_indexes(client, names) if mode != "keyword" else []
+    sem = semantic_indexes(client, names) if mode not in ("keyword", "fuzzy") else []
     warning = ""
     active = names
     if mode == "semantic":
