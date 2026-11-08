@@ -21,7 +21,7 @@ def indices_for(client, scope, book_id="", doc_type=""):
     if book_id:
         groups = {k: v for k, v in groups.items() if k in ("passages", "books")}
     if doc_type:
-        groups = {k: v for k, v in groups.items() if k in ("uploads", "uploads_v2")}
+        groups = {k: v for k, v in groups.items() if k in ("uploads", "uploads_v2", "corpus")}
     return [v[0] for v in groups.values() if client.exists(v[0])]
 
 
@@ -38,7 +38,7 @@ def payload(query, mode, size=12, book_id="", doc_type="", semantic_available=Tr
     if book_id:
         filters.append({"term": {"book_id": book_id}})
     if doc_type:
-        filters.append({"term": {"file_type": doc_type}})
+        filters.append({"terms": {"file_type": [doc_type, doc_type.lstrip(".")]}})
 
     def apply(q):
         return {"bool": {"must": [q], "filter": filters}} if filters else q
@@ -200,7 +200,9 @@ def search(client, q, scope="all", mode="keyword", book_id="", doc_type="", size
         )
         rows = d.get("hits", {}).get("hits", [])
         took = d.get("took", 0)
-    elif mode in ("hybrid", "weighted") and set(sem) != set(names):
+    elif (mode == "weighted" and sem) or (
+        mode in ("hybrid", "weighted") and set(sem) != set(names)
+    ):
         # Safe client-side RRF when a union contains lexical-only documents.
         # Every semantic request targets only indices mapped as semantic_text.
         pool = max(50, size)
@@ -210,7 +212,11 @@ def search(client, q, scope="all", mode="keyword", book_id="", doc_type="", size
             payload=payload(q, "keyword", pool, book_id, doc_type),
             timeout=35,
         )
-        warning = "Hybrid uses separate lexical and semantic searches across collections; ranks are fused locally. Scores are not comparable to ES _score."
+        warning = (
+            "Weighted RRF (BM25 1.0, ELSER 1.5) is fused locally because this Elasticsearch version rejects weighted retrievers. Scores are fusion scores, not ES _score."
+            if mode == "weighted"
+            else "Hybrid uses separate lexical and semantic searches across collections; ranks are fused locally. Scores are not comparable to ES _score."
+        )
         try:
             semantic = client.api(
                 "POST",
