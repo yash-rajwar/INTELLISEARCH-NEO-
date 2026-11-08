@@ -1049,5 +1049,5 @@ if __name__ == "__main__":
             time.sleep(ELSER_KEEPALIVE_SECONDS)
 
     threading.Thread(target=_keep_elser_warm, daemon=True).start()
-    print("V3 showcase: http://127.0.0.1:5003 | original, V1 and V2 unchanged", flush=True)
+    print(f"IntelliSearch V4 prototype: http://{HOST}:{PORT}", flush=True)
     app.run(host=HOST, port=PORT, debug=False, threaded=True, use_reloader=False)
