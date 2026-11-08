@@ -88,6 +88,8 @@ class Settings:
     ollama_url: str
     log_queries: bool
     presenter_mode: bool
+    allow_non_loopback: bool = False
+    context_neighbours: int = 1
 
 
 def load_settings(env: Optional[dict] = None, env_file: Optional[Path] = ROOT / ".env") -> Settings:
@@ -120,4 +122,6 @@ def load_settings(env: Optional[dict] = None, env_file: Optional[Path] = ROOT / 
         ollama_url=_text(merged, "OLLAMA_URL", "http://127.0.0.1:11434"),
         log_queries=_bool(merged, "LOG_QUERIES", True),
         presenter_mode=_bool(merged, "PRESENTER_MODE", False),
+        allow_non_loopback=_bool(merged, "ALLOW_NON_LOOPBACK", False),
+        context_neighbours=_int(merged, "CONTEXT_NEIGHBOURS", 1),
     )

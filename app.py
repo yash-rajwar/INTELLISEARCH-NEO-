@@ -515,7 +515,9 @@ def context(index, hit_id):
             ]
     nearby = []
     if index in (UP_INDEX, V2_INDEX, CORPUS_INDEX) and src.get("document_id") is not None:
-        for k, other_id in neighbour_hit_ids(index, src["document_id"], src.get("chunk_index", 0)):
+        for k, other_id in neighbour_hit_ids(
+            index, src["document_id"], src.get("chunk_index", 0), settings.context_neighbours
+        ):
             try:
                 other = client().get_hit(index, other_id)
                 if other:
@@ -694,6 +696,7 @@ def corpus_file(name):
         abort(404)
     mime = "application/pdf" if suffix == ".pdf" else "text/plain; charset=utf-8"
     response = send_from_directory(folder, name, mimetype=mime, conditional=True)
+    response.headers["Content-Disposition"] = 'inline; filename="%s"' % name.replace('"', "")
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response
 
@@ -1033,6 +1036,13 @@ if __name__ == "__main__":
         print("Elasticsearch version:", ES_CLIENT.probe(), flush=True)
     except ESFailure as e:
         print("Elasticsearch unavailable:", e, flush=True)
+
+    from netguard import check_host
+
+    try:
+        check_host(HOST, settings.allow_non_loopback)
+    except ValueError as exc:
+        raise SystemExit(str(exc))
 
     ELSER_KEEPALIVE_SECONDS = 120  # 0 means warm up once and stop
 
