@@ -1,3 +1,4 @@
+import re
 """Read-only source text access for uploaded documents and original cleaned books."""
 
 import re
