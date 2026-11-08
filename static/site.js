@@ -35,3 +35,21 @@ document.addEventListener('DOMContentLoaded',()=>{
  // While a file is still being indexed in the background, reload the library every 3 seconds.
  if(document.querySelector('[data-busy]'))setTimeout(()=>location.reload(),3000);
 });
+document.addEventListener('DOMContentLoaded',()=>{
+ // System page: run one small ELSER search without leaving the page, and copy the diagnostics report.
+ const test=document.getElementById('semantic-test');
+ const out=document.getElementById('semantic-test-result');
+ if(test&&out)test.addEventListener('click',async()=>{
+   test.disabled=true;out.textContent='Testing... the first call after idle can take about 30 seconds.';
+   try{const r=await fetch('/api/semantic-test',{credentials:'same-origin'});const d=await r.json();
+     out.textContent=(d.ok?'OK: ':'Problem: ')+d.message;}
+   catch(e){out.textContent='Problem: the test request failed.';}
+   test.disabled=false;
+ });
+ const copy=document.getElementById('copy-report');
+ const box=document.getElementById('diag-report');
+ if(copy&&box)copy.addEventListener('click',async()=>{
+   try{await navigator.clipboard.writeText(box.value);copy.textContent='Copied';}
+   catch(e){box.select();try{document.execCommand('copy');copy.textContent='Copied';}catch(e2){copy.textContent='Press Ctrl+C to copy';}}
+ });
+});

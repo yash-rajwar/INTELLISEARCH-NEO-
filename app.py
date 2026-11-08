@@ -69,6 +69,7 @@ from v2_reader import v2_docs, v2_path, v2_doc
 from config import DATA, V2_INDEX, CORPUS_INDEX, settings
 from bootstrap import load_secret_key, setup_logging
 from badge import license_chip
+from sysview import license_view, diagnostics_report
 from querylog import make_query_logger
 
 setup_logging(DATA)
@@ -729,7 +730,16 @@ def corpus_file(name):
 
 @app.get("/system")
 def system_page():
-    return render_template("system.html", status=system_status())
+    s = system_status()
+    lic = license_view(s.get("license"))
+    return render_template(
+        "system.html",
+        status=s,
+        lic=lic,
+        elser=s.get("elser") or {},
+        corpus=s.get("corpus") or {},
+        report=diagnostics_report(s, lic),
+    )
 
 
 @app.get("/demo")
@@ -761,6 +771,30 @@ def semantic_check():
     except (ESFailure, ValueError) as err:
         report = {"ok": False, "message": str(err)}
     return render_template("semantic_check.html", report=report)
+
+
+@app.get("/api/semantic-test")
+def api_semantic_test():
+    """Used by the Test now button on /system: one small ELSER search, reported honestly."""
+    try:
+        r = search(
+            client(),
+            "A scientist destroys an unfinished second creation",
+            "corpus",
+            "semantic",
+            size=1,
+        )
+    except (ESFailure, ValueError) as err:
+        return jsonify(ok=False, message=str(err)[:300])
+    if "fallback" in str(r.get("mode_used", "")):
+        return jsonify(
+            ok=False,
+            message="ELSER did not answer; the search fell back to keyword. " + str(r.get("warning") or "")[:200],
+        )
+    return jsonify(
+        ok=True,
+        message=f"Semantic query completed: {len(r['hits'])} hit(s) in {r['elapsed_ms']} ms.",
+    )
 
 
 # ==================== IntelliSearch V3 enhancements ====================

@@ -1,11 +1,36 @@
 {% extends 'base.html' %}{% block crumb %}System diagnostics{% endblock %}{% block content %}
 <div class="pagehead"><div><span class="eyebrow dark">DEMO SAFETY CENTER</span><h1>System diagnostics</h1><p>Read-only checks. Mapping configuration does not prove the ELSER model is responsive.</p></div><a class="buttonlink" href="/demo">Demo guide ↗</a></div>
+{% set lic = lic if lic is defined else {} %}{% set elser = elser if elser is defined else {} %}{% set corpus = corpus if corpus is defined else {} %}{% set report = report if report is defined else '' %}
+{% if lic.level == 'bad' %}<div class="alert error"><b>Licence:</b> {{ lic.message }}</div>{% endif %}
 <div class="stats three"><div class="stat"><span>ELASTICSEARCH</span><strong>{{ status.es_version or 'Offline' }}</strong><small>{{ status.es_error or 'Version endpoint responded' }}</small></div>
 <div class="stat"><span>ELSER MAPPING</span><strong style="font-size:1.12rem">{{ status.inference.state }}</strong><small>{{ status.inference.endpoint if status.inference.endpoint else 'Use explicit live semantic test' }}</small></div>
 <div class="stat"><span>V3 APP</span><strong>Port {{ status.port }}</strong><small>Loopback only</small></div></div>
 <div class="split"><section class="panel"><h2>Index counts</h2><p class="subtle">Elasticsearch records, not unique uploaded files.</p>
 {% for key,count in status.counts.items() %}<div class="method-usage"><span>{{ SCOPES.get(key,key) }}</span><strong>{{ count if count is not none else 'Unavailable' }}</strong></div>{% else %}<p>Counts unavailable</p>{% endfor %}</section>
 <section class="panel"><h2>Optional features</h2><div class="method-usage"><span>OCR / Tesseract</span><strong>{{ 'Ready' if status.ocr.ready else 'Not configured' }}</strong></div><p class="subtle">{{ status.ocr.detail }}</p><div class="method-usage"><span>Local LLM setting</span><strong>{{ 'Configured' if status.ollama.configured else 'Not set' }}</strong></div><p class="subtle">{{ status.ollama.note }}</p></section></div>
+<div class="split"><section class="panel"><h2>Licence</h2>
+<div class="method-usage"><span>Type</span><strong>{{ lic.type or 'unknown' }}</strong></div>
+<div class="method-usage"><span>Ends</span><strong>{{ lic.expires or 'n/a' }}</strong></div>
+<div class="method-usage"><span>Days left</span><strong>{{ lic.days if lic.days is not none else 'n/a' }}</strong></div>
+<p class="subtle">{{ lic.message }}</p></section>
+<section class="panel"><h2>ELSER and corpus</h2>
+<div class="method-usage"><span>ELSER deployment</span><strong>{{ elser.state or 'unknown' }}</strong></div>
+<div class="method-usage"><span>Allocations</span><strong>{{ elser.allocations if elser.allocations is not none else 'n/a' }}</strong></div>
+{% if elser.note %}<p class="subtle">{{ elser.note }}</p>{% endif %}
+<div class="method-usage"><span>Corpus index</span><strong>{{ 'found' if corpus.exists else 'not found' }}</strong></div>
+<div class="method-usage"><span>Corpus passages</span><strong>{{ corpus.docs if corpus.docs is not none else 'n/a' }}</strong></div>
+<div class="method-usage"><span>Semantic field</span><strong>{{ 'yes' if corpus.semantic else 'no' }}</strong></div>
+<div class="form-actions"><button type="button" id="semantic-test" class="secondary-btn">Test now</button></div>
+<p class="subtle" id="semantic-test-result" aria-live="polite">Runs one small semantic search. Nothing is changed.</p></section></div>
+<div class="split"><section class="panel"><h2>Presenter checklist</h2><ol class="demo-list">
+<li>Start Docker and Elasticsearch. Check the licence and ELSER above.</li>
+<li>Open <code>/warmup</code>, or press Test now, so the first semantic query is not slow.</li>
+<li>Run one semantic search yourself.</li>
+<li>Open the pages you will use in tabs. Turn presenter mode on.</li>
+<li>Close notifications. Confirm the backup video opens.</li></ol></section>
+<section class="panel"><h2>Diagnostics report</h2><p class="subtle">Contains versions, states and counts only. No passwords.</p>
+<textarea id="diag-report" readonly rows="12" style="width:100%;font-family:monospace">{{ report }}</textarea>
+<div class="form-actions"><button type="button" id="copy-report" class="secondary-btn">Copy report</button></div></section></div>
 <section class="panel"><h2>Validate semantic inference explicitly</h2><p>The mapping check above is passive. The optional test below executes one read-only semantic search. It can time out if inference is busy.</p><a class="buttonlink" href="/semantic-check">Run one ELSER query →</a><p class="subtle">No deployment restart, reindexing, or model modifications will occur.</p></section>
 <section class="panel"><h2>If semantic search is unavailable</h2><p>Use the BM25 keyword mode to continue the demonstration. Hybrid results explicitly report any lexical fallback; they do not pretend that ELSER succeeded.</p></section>
 {% endblock %}
