@@ -45,7 +45,7 @@ class BaseNavTests(unittest.TestCase):
         html = self.render("/system")
         self.assertIn('href="#main"', html)
         self.assertIn('<main id="main"', html)
-        self.assertIn("<title>Compare methods &middot; IntelliSearch</title>", html)
+        self.assertIn("<title>Compare methods &middot; IntelliSearch NEO</title>", html)
         for label in ("Search", "Documents", "Workspace", "Insights", "System"):
             self.assertIn('<div class="nav-label">%s</div>' % label, html)
 

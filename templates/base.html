@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light"><title>{% block title %}{{ self.crumb() }} &middot; IntelliSearch{% endblock %}</title>
+<meta name="color-scheme" content="light"><title>{% block title %}{{ self.crumb() }} &middot; IntelliSearch NEO{% endblock %}</title>
 <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}"><link rel="icon" href="data:,"></head><body>
 <a class="skip-link" href="#main">Skip to content</a>
-<div class="layout"><aside class="sidebar"><a href="/" class="brand"><span class="brand-mark" aria-hidden="true">&#10023;</span> IntelliSearch <small>PUBLIC-DATA PROTOTYPE</small></a>
+<div class="layout"><aside class="sidebar"><a href="/" class="brand"><span class="brand-mark" aria-hidden="true">&#10023;</span> IntelliSearch NEO <small>PUBLIC-DATA PROTOTYPE</small></a>
 <nav aria-label="Main">
 <a href="/" {% if request.path=='/' %}class="active" aria-current="page"{% endif %}><span aria-hidden="true">&#9638;</span> Overview</a>
 <div class="nav-label">Search</div>
@@ -23,10 +23,10 @@
 <a href="/system" {% if request.path=='/system' %}class="active" aria-current="page"{% endif %}><span aria-hidden="true">&#9673;</span> System diagnostics</a>
 <a href="/demo" {% if request.path=='/demo' %}class="active" aria-current="page"{% endif %}><span aria-hidden="true">&#9654;</span> Demo walkthrough</a></nav>
 <div class="aside-footer"><div class="tiny-circle"></div> LOCAL PROTOTYPE<br><small>Port 5003 &middot; Private loopback</small><hr><small>Public and synthetic data only</small></div></aside>
-<div class="right"><header class="topbar"><span>IntelliSearch / {% block crumb %}Showcase{% endblock %}</span><span class="top-actions">{% if license_chip %}<span class="top-chip" title="Elasticsearch licence on this machine. ELSER needs an active trial or paid licence.">{{ license_chip }}</span>{% endif %}<button type="button" id="present-toggle" class="secondary-btn" aria-pressed="false">Presenter mode</button></span><span class="top-chip">Prototype &middot; Local Document Intelligence</span></header>
+<div class="right"><header class="topbar"><span>IntelliSearch NEO / {% block crumb %}Showcase{% endblock %}</span><span class="top-actions">{% if license_chip %}<span class="top-chip" title="Elasticsearch licence on this machine. ELSER needs an active trial or paid licence.">{{ license_chip }}</span>{% endif %}<button type="button" id="present-toggle" class="secondary-btn" aria-pressed="false">Presenter mode</button></span><span class="top-chip">Prototype &middot; Local Document Intelligence</span></header>
 <main id="main" tabindex="-1">{% with messages=get_flashed_messages(with_categories=true) %}{% for category,message in messages %}
 <div class="alert {{ category }}">{{ message }}</div>{% endfor %}{% endwith %}{% block content %}{% endblock %}</main>
-<footer>IntelliSearch prototype on public and synthetic data &middot; locally hosted showcase &middot; Results require source verification &middot; Do not expose port 5003 publicly</footer></div></div>
+<footer>IntelliSearch NEO prototype on public and synthetic data &middot; locally hosted showcase &middot; Results require source verification &middot; Do not expose port 5003 publicly</footer></div></div>
 <script src="{{ url_for('static',filename='site.js') }}" defer></script>
 <script>
 document.addEventListener('submit', function (e) {

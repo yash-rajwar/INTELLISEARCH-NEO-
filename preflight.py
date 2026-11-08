@@ -157,7 +157,7 @@ def run_checks():
 def main():
     rows = run_checks()
     width = max(len(name) for _, name, _ in rows)
-    print("IntelliSearch preflight (read-only)\n")
+    print("IntelliSearch NEO preflight (read-only)\n")
     for status, name, detail in rows:
         print(f"[{status:<4}] {name:<{width}}  {detail}")
     fails = sum(1 for r in rows if r[0] == "FAIL")

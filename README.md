@@ -1,4 +1,4 @@
-# IntelliSearch
+# IntelliSearch NEO
 
 A local research prototype that compares keyword search (BM25), semantic search (ELSER) and rank-fused
 hybrid search over a small set of publicly available documents. It is a Flask web app on top of

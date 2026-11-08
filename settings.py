@@ -1,4 +1,4 @@
-"""Settings for IntelliSearch.
+"""Settings for IntelliSearch NEO.
 
 Values come from environment variables, and from an optional .env file in the
 project folder. A real environment variable always wins over the .env file.

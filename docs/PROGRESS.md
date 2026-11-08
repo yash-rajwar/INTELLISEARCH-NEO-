@@ -116,3 +116,6 @@ Not cited (older runs with a since-fixed scoring bug, and an old 23-question dra
 1. Slides (about 7, real hits/questions counts, legacy results kept separate from this evaluation) and the Q&A guide
 2. The manual checks in the open problems list, then two timed rehearsals from a cold ELSER with a backup recording
 3. Tag demo-2026-11-09 after the rehearsals pass; after the demo: rebind es01, change the password, push to a private repository
+
+## Batch 26 (8 Nov 2026)
+- Renamed the product to IntelliSearch NEO in the app, README and documents (display text only; index names, file names and earlier run results are unchanged).

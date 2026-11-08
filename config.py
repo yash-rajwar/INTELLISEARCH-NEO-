@@ -1,4 +1,4 @@
-"""Paths and constants for IntelliSearch.
+"""Paths and constants for IntelliSearch NEO.
 
 Values that a user may change come from settings.py (environment variables and
 an optional .env file). Names here are kept so the other modules do not change.

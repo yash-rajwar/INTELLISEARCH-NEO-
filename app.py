@@ -1,4 +1,4 @@
-"""IntelliSearch Showcase. Standalone local demo on port 5003; legacy indexes read-only."""
+"""IntelliSearch NEO Showcase. Standalone local demo on port 5003; legacy indexes read-only."""
 
 import csv
 import hashlib
@@ -1086,5 +1086,5 @@ if __name__ == "__main__":
             time.sleep(ELSER_KEEPALIVE_SECONDS)
 
     threading.Thread(target=_keep_elser_warm, daemon=True).start()
-    print(f"IntelliSearch V4 prototype: http://{HOST}:{PORT}", flush=True)
+    print(f"IntelliSearch NEO prototype: http://{HOST}:{PORT}", flush=True)
     app.run(host=HOST, port=PORT, debug=False, threaded=True, use_reloader=False)

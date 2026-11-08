@@ -67,7 +67,7 @@ def diagnostics_report(status, lic, when=None):
     ocr = status.get("ocr") or {}
     ollama = status.get("ollama") or {}
     lines = [
-        "IntelliSearch diagnostics (no passwords)",
+        "IntelliSearch NEO diagnostics (no passwords)",
         "Generated: " + when.strftime("%Y-%m-%d %H:%M UTC"),
         "Elasticsearch: " + str(status.get("es_version") or "offline"),
     ]
