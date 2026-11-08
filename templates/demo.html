@@ -1,8 +1,16 @@
 {% extends 'base.html' %}{% block crumb %}Lead demonstration{% endblock %}{% block content %}
 <div class="pagehead"><div><span class="eyebrow dark">INTELLISEARCH V4 · LIVE DEMO</span><h1>Project-lead demonstration</h1><p>Follow these steps in order and verify every result against the source. Prepared queries are examples, not guaranteed relevance scores.</p></div><a class="buttonlink" href="/system">System health ↗</a></div>
+<style>.demo-steps{display:flex;flex-wrap:wrap;gap:.5rem;list-style:none;padding:0;margin:1rem 0;counter-reset:step}.demo-steps li{counter-increment:step}.demo-steps a{display:inline-block;padding:.4rem .8rem;border:1px solid currentColor;border-radius:999px;text-decoration:none}.demo-steps a::before{content:counter(step) ". ";font-weight:bold}</style>
+<nav aria-label="Demo steps"><ol class="demo-steps">
+<li><a href="{{ url_for('system_page') }}">System</a></li>
+<li><a href="{{ url_for('compare', q='What is the person whose personal data is collected called?', scope='corpus') }}">Compare methods</a></li>
+<li><a href="{{ url_for('search_page') }}">Search and sources</a></li>
+<li><a href="{{ url_for('library') }}">Upload</a></li>
+<li><a href="{{ url_for('summarize_document') }}">Summarize</a></li>
+<li><a href="{{ url_for('evaluation_page') }}">Honest results</a></li></ol></nav>
 <section class="hero"><h2>Search → compare → verify → explain</h2><p>Start with one semantic passage search. Show the same query with BM25 and RRF, then open its context and the original book line or PDF page.</p></section>
 <section class="panel"><div class="panel-head"><h2>Prepared natural-language examples</h2><span class="pill">Read-only queries</span></div>
-{% for c in cases %}<article class="demo-case"><div><span class="pill muted">{{ c.id }}</span><strong>{{ c.name }}</strong><p>{{ c.query }}</p><small class="subtle">Expected topic: {{ c.expected }}</small></div><div class="demo-actions"><a class="buttonlink" href="{{ url_for('search_page',q=c.query,scope=c.scope,mode='keyword') }}">BM25</a><a class="buttonlink" href="{{ url_for('search_page',q=c.query,scope=c.scope,mode='semantic') }}">ELSER</a><a class="buttonlink" href="{{ url_for('compare',q=c.query,scope=c.scope) }}">Compare all</a></div></article>{% endfor %}</section>
+{% for c in cases %}<article class="demo-case"><div><span class="pill muted">{{ c.id }}</span><strong>{{ c.name }}</strong><p>{{ c.query }}</p><small class="subtle">Expected topic: {{ c.expected }}</small></div><div class="demo-actions"><a class="buttonlink" href="{{ url_for('search_page',q=c.query,scope=c.scope,mode='keyword') }}">BM25</a><a class="buttonlink" href="{{ url_for('search_page',q=c.query,scope=c.scope,mode='semantic') }}">ELSER</a><a class="buttonlink" href="{{ url_for('compare',q=c.query,scope=c.scope) }}">Compare all</a></div></article>{% else %}<p class="subtle">No prepared examples are configured.</p>{% endfor %}</section>
 <div class="split"><section class="panel"><h2>Show V3 document intelligence</h2><ol class="demo-list"><li>Upload <code>samples/sample_two_page_brief.pdf</code> using Document library.</li><li>Search <strong>blue lantern North Archive</strong> in V3 uploads using BM25.</li><li>Open original PDF at page 2; inspect related chunk context.</li><li>Show Summary &amp; Classify, Ask Documents and two-document comparison.</li><li>Open System diagnostics and Kibana Console to show real indexes.</li></ol></section><section class="panel"><h2>Kibana Console — safe commands</h2><pre class="kibana">GET /
 GET _license
 GET _cat/indices?v

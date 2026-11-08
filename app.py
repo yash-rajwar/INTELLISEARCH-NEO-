@@ -703,9 +703,27 @@ def system_page():
     )
 
 
+CORPUS_DEMO_CASES = [
+    {
+        "id": "C1",
+        "name": "Meaning, not wording",
+        "query": "What is the person whose personal data is collected called?",
+        "scope": "corpus",
+        "expected": "Digital Personal Data Protection Act: the term Data Principal (the question never uses it)",
+    },
+    {
+        "id": "C2",
+        "name": "Typos",
+        "query": "Concent Manger single point of contact",
+        "scope": "corpus",
+        "expected": "A query with two typos. Compare how each mode handles it, and say only what the /evaluation typo rows show.",
+    },
+]
+
+
 @app.get("/demo")
 def demo_page():
-    return render_template("demo.html", cases=DEMO_CASES if LEGACY_ENABLED else [])
+    return render_template("demo.html", cases=DEMO_CASES if LEGACY_ENABLED else CORPUS_DEMO_CASES)
 
 
 @app.get("/api/status")
