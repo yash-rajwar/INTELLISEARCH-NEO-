@@ -19,3 +19,9 @@ mark{background:#ffe58f;color:#24314c;padding:0 2px;border-radius:3px}
 .groupmore .sub{border-top:1px solid #e5eaf2;padding:8px 0}
 :focus-visible{outline:2px solid #6552c7;outline-offset:2px}
 .pill.meaning{background:#e3f3e8;color:#1b5a2c;border:1px solid #b9dcc4}
+.top-actions{margin-left:auto;margin-right:12px;display:flex;gap:10px;align-items:center}
+.top-actions .secondary-btn{padding:6px 12px;font-size:.78rem}
+html.presenter{font-size:118%}
+html.presenter .sidebar{width:220px;min-width:220px}
+html.presenter .aside-footer{display:none}
+html.presenter .excerpt{font-size:1.05rem;line-height:1.7}

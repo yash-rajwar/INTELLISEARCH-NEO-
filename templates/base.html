@@ -16,7 +16,7 @@
 <a href="/system" {% if request.path=='/system' %}class="active"{% endif %}><span>◉</span> System diagnostics</a>
 <a href="/analytics" {% if request.path=='/analytics' %}class="active"{% endif %}><span>◷</span> Analytics</a></nav>
 <div class="aside-footer"><div class="tiny-circle"></div> LOCAL PROTOTYPE<br><small>Port 5003 · Private loopback</small><hr><small>Original, V1, V2 files &amp; indexes preserved</small></div></aside>
-<div class="right"><header class="topbar"><span>IntelliSearch / {% block crumb %}Showcase{% endblock %}</span><span class="top-chip">Prototype · Local Document Intelligence</span></header>
+<div class="right"><header class="topbar"><span>IntelliSearch / {% block crumb %}Showcase{% endblock %}</span><span class="top-actions">{% if license_chip %}<span class="top-chip" title="Elasticsearch licence on this machine. ELSER needs an active trial or paid licence.">{{ license_chip }}</span>{% endif %}<button type="button" id="present-toggle" class="secondary-btn" aria-pressed="false">Presenter mode</button></span><span class="top-chip">Prototype · Local Document Intelligence</span></header>
 <main>{% with messages=get_flashed_messages(with_categories=true) %}{% for category,message in messages %}
 <div class="alert {{ category }}">{{ message }}</div>{% endfor %}{% endwith %}{% block content %}{% endblock %}</main>
 <footer>IntelliSearch prototype on public and synthetic data · locally hosted showcase · Results require source verification · Do not expose port 5003 publicly</footer></div></div>

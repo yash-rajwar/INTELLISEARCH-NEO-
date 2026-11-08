@@ -21,3 +21,13 @@ document.addEventListener('DOMContentLoaded',()=>{
    });
  });
 });
+document.addEventListener('DOMContentLoaded',()=>{
+ const btn=document.getElementById('present-toggle');
+ if(!btn)return;
+ const root=document.documentElement;
+ const apply=on=>{root.classList.toggle('presenter',on);btn.setAttribute('aria-pressed',String(on));btn.textContent=on?'Exit presenter mode':'Presenter mode';};
+ let on=false;
+ try{on=localStorage.getItem('presenter')==='1';}catch(e){}
+ apply(on);
+ btn.addEventListener('click',()=>{on=!on;apply(on);try{localStorage.setItem('presenter',on?'1':'0');}catch(e){}});
+});

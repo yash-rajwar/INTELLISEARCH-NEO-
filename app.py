@@ -66,6 +66,7 @@ from llm import enabled as llm_enabled, generate as llm_generate
 from v2_reader import v2_docs, v2_path, v2_doc
 from config import DATA, V2_INDEX
 from bootstrap import load_secret_key, setup_logging
+from badge import license_chip
 
 setup_logging(DATA)
 log = logging.getLogger("intellisearch")
@@ -93,6 +94,7 @@ def common():
         BOOK_NAMES=BOOK_NAMES,
         csrf_token=session["csrf_token"],
         has_local_llm=llm_enabled(),
+        license_chip=license_chip(client),
     )
 
 
