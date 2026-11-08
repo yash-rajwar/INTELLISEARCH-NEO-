@@ -1,8 +1,13 @@
 """Tests for the /evaluation page: only the two cited runs, honest caveats, no crash on bad files."""
 import json
-import logging
+import os
+import subprocess
+import sys
+from pathlib import Path
 
 import evalview
+
+ROOT = Path(__file__).resolve().parent.parent
 
 
 def _row(qid, qtype, expected, rank=1, error=None):
@@ -97,25 +102,21 @@ def test_bar_width_is_proportional_and_safe():
     assert evalview._bar_width(30, 20) == evalview.MAX_W
 
 
-def _all_loggers():
-    """The root logger and every named logger that exists right now."""
-    named = [lg for lg in logging.Logger.manager.loggerDict.values() if isinstance(lg, logging.Logger)]
-    return [logging.getLogger()] + named
-
-
 def _get_page():
-    """GET /evaluation. Importing app adds logging handlers; remove them again so other tests are not affected."""
-    before = {id(lg): list(lg.handlers) for lg in _all_loggers()}
-    try:
-        import app as appmod
-
-        return appmod.app.test_client().get("/evaluation").get_data(as_text=True)
-    finally:
-        for lg in _all_loggers():
-            for handler in list(lg.handlers):
-                if handler not in before.get(id(lg), []):
-                    lg.removeHandler(handler)
-                    handler.close()
+    """GET /evaluation in a separate Python process, so importing app cannot change this test run."""
+    code = "import app; print(app.app.test_client().get('/evaluation').get_data(as_text=True))"
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    result = subprocess.run(
+        [sys.executable, "-c", code],
+        cwd=str(ROOT),
+        env=env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=120,
+    )
+    assert result.returncode == 0, "page process failed: " + result.stderr[-600:]
+    return result.stdout
 
 
 def test_page_shows_caveat_and_only_cited_runs():
