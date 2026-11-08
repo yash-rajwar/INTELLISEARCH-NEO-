@@ -1,8 +1,8 @@
 {% extends 'base.html' %}{% block crumb %}Document library{% endblock %}{% block content %}
 <div class="pagehead"><div><span class="eyebrow dark">MULTI-DOCUMENT SEARCH</span><h1>Document library</h1><p>Bring new files into an isolated showcase collection, without changing the existing book indexes.</p></div></div>
-<div class="panel upload-card"><h2>Upload and index a document</h2><p class="subtle">PDF · DOCX · TXT · Maximum 12 MB · up to 200 PDF pages, 120 extracted passages per file</p>
+<div class="panel upload-card"><h2>Upload and index a document</h2><p class="subtle">PDF · DOCX · TXT · Maximum 12 MB · up to 200 PDF pages, up to 3,000 passages per file</p>
 <form method="post" action="/upload" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label class="dropzone">Select a file<input name="file" type="file" accept=".pdf,.docx,.txt" required></label>
-<label class="check"><input type="checkbox" name="semantic"> Also generate ELSER embeddings (experimental; may be slow or time out)</label>
+<label class="check"><input type="checkbox" name="semantic" checked> Also generate ELSER embeddings (experimental; may be slow or time out)</label>
 <label class="check"><input type="checkbox" name="ocr"> OCR empty/scanned PDF pages (requires locally installed Tesseract)</label>
 <p class="subtle">BM25 indexing happens first. If embedding inference fails, the document remains keyword-searchable. Scanned pages require installed Tesseract OCR (optional). OCR is capped at 40 image-only pages per PDF.</p>
 <button class="primary" type="submit">Upload and index →</button></form></div>

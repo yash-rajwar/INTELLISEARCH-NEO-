@@ -120,6 +120,7 @@ def init_v2_db():
     init_db()
     with db() as c:
         c.executescript(V2_SCHEMA)
+        c.executescript(HASH_SCHEMA)
 
 
 def save_insights(doc_id, category, tags, ocr_pages=0):
@@ -179,3 +180,33 @@ def recent_queries(limit=12):
                 "SELECT query FROM searches WHERE status=? ORDER BY id DESC LIMIT ?", ("ok", limit)
             )
         ]
+
+
+HASH_SCHEMA = (
+    "CREATE TABLE IF NOT EXISTS upload_hashes ("
+    "sha256 TEXT PRIMARY KEY, doc_id TEXT NOT NULL, created_at TEXT NOT NULL);"
+)
+
+
+def find_hash(digest):
+    # Returns {doc_id, filename} if a file with this content was already uploaded.
+    with db() as c:
+        r = c.execute(
+            "SELECT h.doc_id, u.filename FROM upload_hashes h "
+            "LEFT JOIN uploads u ON u.doc_id = h.doc_id WHERE h.sha256 = ?",
+            (digest,),
+        ).fetchone()
+    return dict(r) if r else None
+
+
+def remember_hash(digest, doc_id):
+    with db() as c:
+        c.execute(
+            "INSERT OR REPLACE INTO upload_hashes(sha256, doc_id, created_at) VALUES(?,?,?)",
+            (digest, doc_id, now()),
+        )
+
+
+def forget_hash(doc_id):
+    with db() as c:
+        c.execute("DELETE FROM upload_hashes WHERE doc_id = ?", (doc_id,))

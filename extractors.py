@@ -1,7 +1,10 @@
 """Extract trusted plain text from uploaded public/local samples. Never execute file contents."""
 
 import io
-from config import MAX_CHARS, MAX_CHUNKS, MAX_PAGES
+from config import MAX_PAGES
+
+# Safety limit: one upload may not create more passages than this.
+MAX_PASSAGES = 3000
 
 
 def text_pages(data: bytes, extension: str, ocr=False):
@@ -62,15 +65,15 @@ def text_pages(data: bytes, extension: str, ocr=False):
 
 
 def make_chunks(pages, target=1400, overlap=180):
+    # Split page text into overlapping passages. Nothing is cut off silently:
+    # a file that needs more than MAX_PASSAGES passages is refused instead.
     chunks = []
-    remaining = MAX_CHARS
     for p in pages:
-        original = p["text"][: max(0, remaining)]
-        remaining -= len(original)
+        original = p["text"]
         if not original.strip():
             continue
         start = 0
-        while start < len(original) and len(chunks) < MAX_CHUNKS:
+        while start < len(original):
             end = min(len(original), start + target)
             if end < len(original):
                 cutoff = max(
@@ -82,11 +85,14 @@ def make_chunks(pages, target=1400, overlap=180):
             value = original[start:end].strip()
             if value:
                 chunks.append({"page_number": p["page"], "content": value})
+                if len(chunks) > MAX_PASSAGES:
+                    raise ValueError(
+                        f"This file would create more than {MAX_PASSAGES} passages. "
+                        "Please upload a smaller file or split it."
+                    )
             if end >= len(original):
                 break
             start = max(start + 1, end - overlap)
-        if len(chunks) >= MAX_CHUNKS or remaining <= 0:
-            break
     if not chunks:
         raise ValueError("No readable text could be chunked.")
     return chunks

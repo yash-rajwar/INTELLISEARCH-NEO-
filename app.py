@@ -1,6 +1,7 @@
 """IntelliSearch Showcase. Standalone local demo on port 5003; legacy indexes read-only."""
 
 import csv
+import hashlib
 import secrets
 import getpass
 import io
@@ -51,6 +52,8 @@ from store import (
     remove_bookmark,
     bookmarks,
     recent_queries,
+    find_hash,
+    remember_hash,
 )
 from extractors import text_pages, make_chunks
 from es_client import ES, ESFailure
@@ -267,6 +270,16 @@ def upload():
         except (zipfile.BadZipFile, ValueError):
             flash("Invalid DOCX archive.", "error")
             return redirect(url_for("library"))
+    digest = hashlib.sha256(data).hexdigest()
+    earlier = find_hash(digest)
+    if earlier:
+        flash(
+            "Not added: this file has the same content as "
+            + (earlier.get("filename") or "an earlier upload")
+            + ". Delete the earlier copy first if you want to upload it again.",
+            "error",
+        )
+        return redirect(url_for("library"))
     doc_id = uuid.uuid4().hex
     target = UPLOADS / (doc_id + ext)
     enable_semantic = request.form.get("semantic") == "on"
@@ -275,7 +288,6 @@ def upload():
     try:
         pages, page_count = text_pages(data, ext, ocr=enable_ocr)
         chunks = make_chunks(pages)
-        truncated = sum(len(p["text"]) for p in pages) > 270_000 or len(chunks) >= 120
         created = now()
         documents = [
             {
@@ -324,11 +336,10 @@ def upload():
             sem = "unavailable"
             info = "Semantic endpoint not available; indexed for BM25."
         save_doc(doc_id, filename, ext, len(data), len(chunks), page_count, status, sem, info)
+        remember_hash(digest, doc_id)
         classification = classify("\n".join(x["text"] for x in pages)[:75000])
         ocr_pages = sum(1 for p in pages if p.get("ocr"))
         save_insights(doc_id, classification["category"], classification["tags"], ocr_pages)
-        if truncated:
-            info += " Indexing was capped at 120 chunks / 270,000 text characters; not all content may be searchable."
         flash(
             f"Indexed {len(chunks)} passages from {filename}. Classification: {classification['category']}."
             + " "
