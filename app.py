@@ -674,43 +674,10 @@ def system_status():
 
 @app.get("/evaluation")
 def evaluation_page():
-    """Show a saved evaluation run. Reads files only, so it works without Elasticsearch."""
-    import json
-    from pathlib import Path as _Path
-    from eval import metrics
+    """Show the two cited evaluation runs. Reads saved files only, so it works without Elasticsearch."""
+    from evalview import load_cited_runs
 
-    folder = _Path(__file__).resolve().parent / "eval" / "results"
-    files = sorted(folder.glob("*.json"))
-    runs = [f.stem for f in reversed(files)]
-    wanted = request.args.get("run", "")
-    chosen = next((f for f in files if f.stem == wanted), files[-1] if files else None)
-    if chosen is None:
-        return render_template("evaluation.html", data=None, runs=[], chosen="")
-    data = json.loads(chosen.read_text(encoding="utf-8"))
-    results = data["results"]
-    first = next(iter(results.values()))
-    types = sorted({r["type"] for r in first})
-    by_type = {
-        t: {m: metrics.summarise([r for r in rows if r["type"] == t]) for m, rows in results.items()}
-        for t in types
-    }
-    unanswerable = []
-    for r in first:
-        if r["expected_doc"]:
-            continue
-        tops = {}
-        for m, rows in results.items():
-            row = next(x for x in rows if x["id"] == r["id"])
-            tops[m] = row["top_title"] or "no result"
-        unanswerable.append({"id": r["id"], "question": r["question"], "tops": tops})
-    return render_template(
-        "evaluation.html",
-        data=data,
-        runs=runs,
-        chosen=chosen.stem,
-        by_type=by_type,
-        unanswerable=unanswerable,
-    )
+    return render_template("evaluation.html", runs=load_cited_runs())
 
 
 @app.get("/corpus-file/<name>")

@@ -4,46 +4,94 @@
 {% block content %}
 <style>
 .ev table{border-collapse:collapse;width:100%;margin:8px 0 24px;background:#fff}
+.ev caption{caption-side:top;text-align:left;color:#5b6779;font-size:.88rem;padding:4px 0}
 .ev th,.ev td{border:1px solid #e5eaf2;padding:6px 10px;text-align:left;font-size:.92rem}
 .ev thead th{background:#f4f6fa}
 .ev .caveat{background:#fff4d6;color:#6b4500;border:1px solid #e8c766;border-radius:10px;padding:12px 16px;margin:12px 0 20px}
+.ev .caveat ul{margin:6px 0 0 18px;padding:0}
+.ev .notice{background:#fdeaea;color:#7a1f1f;border:1px solid #e3a5a5;border-radius:10px;padding:10px 14px;margin:12px 0}
 .ev .meta{color:#5b6779;font-size:.9rem}
+.ev .jump a{margin-right:16px}
+.ev .bars{max-width:480px;width:100%;height:auto;font-size:12px;fill:currentColor;margin:4px 0 20px}
+.ev .bars .mode{font-weight:600;font-size:13px}
+.ev .bars .track{fill:#f4f6fa;stroke:#c9d3e3}
+.ev .bars .b1{fill:#3b5f9a}
+.ev .bars .b5{fill:#a9bddb;stroke:#3b5f9a}
 </style>
 <div class="ev">
 <h1>Evaluation results</h1>
-{% macro head() %}<thead><tr><th>Mode</th><th>Doc hit@1</th><th>Doc hit@3</th><th>Doc hit@5</th><th>Passage hit@1</th><th>Passage hit@3</th><th>Passage hit@5</th><th>MRR</th><th>Latency p50 / p95 ms</th></tr></thead>{% endmacro %}
+{% macro head() %}<thead><tr><th scope="col">Mode</th><th scope="col">Doc hit@1</th><th scope="col">Doc hit@3</th><th scope="col">Doc hit@5</th><th scope="col">Passage hit@1</th><th scope="col">Passage hit@3</th><th scope="col">Passage hit@5</th><th scope="col">MRR</th><th scope="col">Latency p50 / p95 ms</th></tr></thead>{% endmacro %}
 {% macro row(mode, s) %}<tr><th scope="row">{{ mode }}</th>
 <td>{{ s['doc_hit@1'] }}/{{ s.doc_n }}</td><td>{{ s['doc_hit@3'] }}/{{ s.doc_n }}</td><td>{{ s['doc_hit@5'] }}/{{ s.doc_n }}</td>
 <td>{{ s['passage_hit@1'] }}/{{ s.passage_n }}</td><td>{{ s['passage_hit@3'] }}/{{ s.passage_n }}</td><td>{{ s['passage_hit@5'] }}/{{ s.passage_n }}</td>
 <td>{{ 'n/a' if s.mrr is none else '%.3f'|format(s.mrr) }}</td>
 <td>{{ 'n/a' if s.wall_p50 is none else (s.wall_p50 ~ ' / ' ~ s.wall_p95) }}</td></tr>{% endmacro %}
-{% if not data %}
-<p>No saved evaluation runs were found in eval/results. Run <code>python -m eval.run_eval --split dev</code> first.</p>
+
+<div class="caveat" id="caveat"><strong>Read this first.</strong> This is a small, hand-built question set over public,
+openly licensed and synthetic documents. It is exploratory.
+<ul>
+{% for run in runs if run.found %}<li>{{ run.label }}: {{ run.n_total }} questions, {{ run.n_answerable }} with an answer in the corpus and {{ run.n_no_answer }} without.</li>
+{% endfor %}<li>The test split was run once. Its questions are frozen at git tag <code>eval-frozen-v2</code> and it must not be run again.</li>
+<li>No mode wins consistently. The order of the modes changed between the two splits.</li>
+<li>With this few questions, a difference of one or two questions is within noise.</li>
+<li>Counts are shown as hits/questions, not percentages. This is not a production accuracy claim and says nothing about other documents.</li>
+</ul></div>
+
+<p class="meta">Doc hit = the right document is among the top k distinct documents. Passage hit = one of the top k chunks contains
+the gold sentence from the source (where no gold span matched, a word-overlap fallback was used; see docs/EVALUATION.md).
+MRR = mean reciprocal rank of the first matching chunk. Weighted RRF is fused locally (BM25 1.0, ELSER 1.5) because
+Elasticsearch 9.0.0 rejects the weighted retriever format. Only the two runs cited in docs/EVALUATION.md are shown.</p>
+<p class="jump">{% for run in runs %}<a href="#{{ run.anchor }}">{{ run.label }}</a>{% endfor %}</p>
+
+{% for run in runs %}
+<section id="{{ run.anchor }}">
+<h2>{{ run.label }}</h2>
+{% if not run.found %}
+<div class="notice">Saved run {{ run.stem }} {{ run.problem }}.</div>
 {% else %}
-<div class="caveat"><strong>Read this first.</strong> This is a small, hand-built question set
-({{ data.meta.question_count }} questions, split: {{ data.meta.split }}) over public and synthetic documents.
-It is exploratory. It is not a production accuracy claim and says nothing about other documents.
-Counts are shown as hits/questions, not percentages. Differences of one question are within noise.</div>
-<p class="meta">Run {{ chosen }} &middot; {{ data.meta.timestamp }} &middot; git {{ data.meta.git_commit }} &middot;
-Elasticsearch {{ data.meta.elasticsearch }} &middot; question file hash {{ data.meta.questions_sha256[:12] }}</p>
-<p class="meta">Doc hit = right document among the top k distinct documents. Passage hit = a top-k chunk contains the
-gold sentence from the source. MRR = mean reciprocal rank of the first matching chunk. Weighted RRF is fused locally
-(BM25 1.0, ELSER 1.5) because Elasticsearch 9.0.0 rejects the weighted retriever format.</p>
-<h2>All answerable questions</h2>
-<table>{{ head() }}<tbody>{% for mode, s in data.summary.items() %}{{ row(mode, s) }}{% endfor %}</tbody></table>
-{% for t, block in by_type.items() %}{% if t != 'unanswerable' %}
-<h2>Question type: {{ t }}</h2>
-<table>{{ head() }}<tbody>{% for mode, s in block.items() %}{{ row(mode, s) }}{% endfor %}</tbody></table>
-{% endif %}{% endfor %}
-{% if unanswerable %}
-<h2>Questions with no answer in the corpus</h2>
-<p class="meta">Every mode still returns a top result. The app does not yet say "no good match".</p>
-<table><thead><tr><th>Question</th>{% for m in data.summary %}<th>{{ m }}</th>{% endfor %}</tr></thead><tbody>
-{% for u in unanswerable %}<tr><td>{{ u.id }}: {{ u.question }}</td>{% for m in data.summary %}<td>{{ u.tops[m] }}</td>{% endfor %}</tr>{% endfor %}
+{% set c = run.chart %}
+<p class="meta">Run {{ run.stem }} &middot; {{ run.timestamp }} &middot; git {{ run.git }} &middot;
+Elasticsearch {{ run.elasticsearch }} &middot; question file hash {{ run.questions_hash }}</p>
+{% if run.failed %}
+<div class="notice"><strong>Some questions did not run.</strong> They are left out of that mode's counts (see the N in each cell).
+<ul>{% for f in run.failed %}<li>{{ f.id }}, {{ f.mode }}: {{ f.error }}</li>{% endfor %}</ul></div>
+{% endif %}
+
+<h3>Passage hits at a glance</h3>
+<svg class="bars" viewBox="0 0 {{ c.width }} {{ c.height }}" role="img" aria-label="Passage hits by mode, {{ run.label }}">
+<rect class="b1" x="{{ c.bar_x }}" y="4" width="12" height="12"/>
+<text x="{{ c.bar_x + 18 }}" y="14">top result (hit@1)</text>
+<rect class="b5" x="{{ c.bar_x + 150 }}" y="4" width="12" height="12"/>
+<text x="{{ c.bar_x + 168 }}" y="14">any of top five (hit@5)</text>
+{% for r in c.rows %}
+<text class="mode" x="0" y="{{ r.label_y }}">{{ r.mode }}</text>
+{% for b in r.bars %}
+<text x="{{ c.bar_x - 6 }}" y="{{ b.y + 11 }}" text-anchor="end">{{ b.tag }}</text>
+<rect class="track" x="{{ c.bar_x }}" y="{{ b.y }}" width="{{ c.max_w }}" height="{{ c.bar_h }}"/>
+<rect class="{{ b.css }}" x="{{ c.bar_x }}" y="{{ b.y }}" width="{{ b.width }}" height="{{ c.bar_h }}"><title>{{ b.aria }}</title></rect>
+<text x="{{ b.text_x }}" y="{{ b.y + 11 }}">{{ b.text }}</text>
+{% endfor %}
+{% endfor %}
+</svg>
+<p class="meta">Each bar runs from 0 to the number of questions for that mode. The text beside it gives the exact count.</p>
+
+<h3>All answerable questions</h3>
+<table><caption>{{ run.label }}: {{ run.n_answerable }} answerable questions</caption>{{ head() }}<tbody>{% for mode, s in run.summary.items() %}{{ row(mode, s) }}{% endfor %}</tbody></table>
+
+{% for block in run.by_type %}
+<h3>Question type: {{ block.type }} ({{ block.count }} question{{ '' if block.count == 1 else 's' }})</h3>
+<table><caption>{{ run.label }}, type {{ block.type }}</caption>{{ head() }}<tbody>{% for mode, s in block.modes.items() %}{{ row(mode, s) }}{% endfor %}</tbody></table>
+{% endfor %}
+
+{% if run.no_answer %}
+<h3>Questions with no answer in the corpus</h3>
+<p class="meta">Every mode still returns a top result, so a result alone does not show that an answer exists. The app shows a standing note instead of a score threshold, because the score ranges overlapped.</p>
+<table><thead><tr><th scope="col">Question</th>{% for m in run.summary %}<th scope="col">{{ m }}</th>{% endfor %}</tr></thead><tbody>
+{% for u in run.no_answer %}<tr><td>{{ u.id }}: {{ u.question }}</td>{% for m in run.summary %}<td>{{ u.tops[m] }}</td>{% endfor %}</tr>{% endfor %}
 </tbody></table>
 {% endif %}
-<h2>Other saved runs</h2>
-<p>{% for r in runs %}<a href="/evaluation?run={{ r }}">{{ r }}</a>{% if not loop.last %} &middot; {% endif %}{% endfor %}</p>
 {% endif %}
+</section>
+{% endfor %}
 </div>
 {% endblock %}
