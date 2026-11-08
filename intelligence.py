@@ -176,7 +176,7 @@ def evidence_reply(question, hits, limit=5):
         )
         ranked.append(
             {
-                "citation": n,
+                "citation": len(ranked) + 1,
                 "text": best[:420],
                 "title": h.get("title", "Untitled"),
                 "source_url": h.get("source_url") or "",

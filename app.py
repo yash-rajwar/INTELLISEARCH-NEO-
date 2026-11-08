@@ -63,7 +63,8 @@ from es_client import ES, ESFailure
 from search import MODES, SCOPES, search, result_limit, neighbour_hit_ids
 from intelligence import classify, summarize, compare_texts, explain, evidence_reply
 from documents import choices, read_source
-from llm import enabled as llm_enabled, generate as llm_generate
+from llm import enabled as llm_enabled, generate as llm_generate, status as llm_status
+from askcheck import check_citations, no_term_overlap
 from v2_reader import v2_docs, v2_path, v2_doc
 from config import DATA, V2_INDEX, CORPUS_INDEX, settings
 from bootstrap import load_secret_key, setup_logging
@@ -777,10 +778,13 @@ def ask_documents():
     error = ""
     retrieval = None
     generated = False
+    weak = False
+    citation_report = None
     if question:
         try:
             retrieval = search(client(), question, scope, mode, size=6)
             evidences = evidence_reply(question, retrieval["hits"])
+            weak = bool(retrieval["hits"]) and no_term_overlap(question, retrieval["hits"])
             if request.method == "POST" and request.form.get("use_llm") == "yes":
                 if not llm_enabled():
                     raise ValueError(
@@ -788,8 +792,17 @@ def ask_documents():
                     )
                 if not evidences:
                     raise ValueError("No search evidence. Try another question.")
+                state = llm_status()
+                if state["state"] != "ready":
+                    raise ValueError(state["message"])
+                if weak:
+                    raise ValueError(
+                        "AI answer skipped: none of the retrieved passages contain the words of "
+                        "your question. Read the passages below, or rephrase the question."
+                    )
                 answer = llm_generate(question, [e["text"] for e in evidences])
                 generated = True
+                citation_report = check_citations(answer, len(evidences))
             log_query(question, scope, mode, len(retrieval["hits"]), retrieval["elapsed_ms"], "ok")
         except (ValueError, RuntimeError, ESFailure) as exc:
             error = str(exc)
@@ -802,6 +815,8 @@ def ask_documents():
         retrieval=retrieval,
         answer=answer,
         generated=generated,
+        weak=weak,
+        citation_report=citation_report,
         error=error,
     )
 

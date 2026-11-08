@@ -37,6 +37,7 @@ def generate(instruction, sources, task="answer"):
             json={
                 "model": MODEL,
                 "stream": False,
+                "options": {"temperature": 0.1},
                 "messages": [
                     {
                         "role": "system",
@@ -54,3 +55,48 @@ def generate(instruction, sources, task="answer"):
         return text[:8000]
     except (requests.RequestException, ValueError, KeyError) as exc:
         raise RuntimeError("Local Ollama request failed: " + str(exc)[:300]) from exc
+
+
+def _is_local_url():
+    u = urlparse(URL)
+    return not (
+        u.scheme != "http"
+        or u.hostname not in ("127.0.0.1", "localhost", "::1")
+        or u.username
+        or u.password
+        or u.query
+        or u.fragment
+    )
+
+
+def status():
+    """Quickly check whether the optional Ollama model can be used. Never raises.
+
+    Returns {"state": ..., "message": ...} where state is one of
+    not_configured, invalid_url, not_running, model_missing, ready.
+    """
+    if not enabled():
+        return {
+            "state": "not_configured",
+            "message": "No local AI model is configured, so only cited evidence is available.",
+        }
+    if not _is_local_url():
+        return {
+            "state": "invalid_url",
+            "message": "The optional Ollama address must be local (http://127.0.0.1:11434).",
+        }
+    try:
+        response = requests.get(URL + "/api/tags", timeout=(1.5, 3))
+        response.raise_for_status()
+        names = [str(m.get("name", "")) for m in response.json().get("models", [])]
+    except (requests.RequestException, ValueError, AttributeError):
+        return {
+            "state": "not_running",
+            "message": "Ollama is not running at " + URL + ". Cited evidence still works.",
+        }
+    if MODEL not in names and MODEL + ":latest" not in names:
+        return {
+            "state": "model_missing",
+            "message": "Ollama is running, but the model '" + MODEL + "' is not installed.",
+        }
+    return {"state": "ready", "message": "Ollama model '" + MODEL + "' is ready."}
