@@ -1,5 +1,6 @@
 """Tests for the /evaluation page: only the two cited runs, honest caveats, no crash on bad files."""
 import json
+import logging
 
 import evalview
 
@@ -96,10 +97,29 @@ def test_bar_width_is_proportional_and_safe():
     assert evalview._bar_width(30, 20) == evalview.MAX_W
 
 
-def test_page_shows_caveat_and_only_cited_runs():
-    import app as appmod
+def _all_loggers():
+    """The root logger and every named logger that exists right now."""
+    named = [lg for lg in logging.Logger.manager.loggerDict.values() if isinstance(lg, logging.Logger)]
+    return [logging.getLogger()] + named
 
-    html = appmod.app.test_client().get("/evaluation").get_data(as_text=True)
+
+def _get_page():
+    """GET /evaluation. Importing app adds logging handlers; remove them again so other tests are not affected."""
+    before = {id(lg): list(lg.handlers) for lg in _all_loggers()}
+    try:
+        import app as appmod
+
+        return appmod.app.test_client().get("/evaluation").get_data(as_text=True)
+    finally:
+        for lg in _all_loggers():
+            for handler in list(lg.handlers):
+                if handler not in before.get(id(lg), []):
+                    lg.removeHandler(handler)
+                    handler.close()
+
+
+def test_page_shows_caveat_and_only_cited_runs():
+    html = _get_page()
     assert "Read this first" in html
     assert "eval-frozen-v2" in html
     assert "<svg" in html
