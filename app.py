@@ -65,7 +65,8 @@ from intelligence import classify, summarize, compare_texts, explain, evidence_r
 from longdoc import summarize_long, aligned_passages
 from comparison import annotate
 from parallel import run_compare
-from documents import choices, read_source
+from documents import choices, read_source, corpus_catalog
+from related import find_related
 from llm import enabled as llm_enabled, generate as llm_generate, status as llm_status
 from askcheck import check_citations, no_term_overlap
 from v2_reader import v2_docs, v2_path, v2_doc
@@ -146,7 +147,7 @@ app.jinja_env.filters["hl"] = highlight_html
 def security_headers(response):
     response.headers.setdefault("X-Content-Type-Options", "nosniff")
     response.headers.setdefault("Referrer-Policy", "no-referrer")
-    response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+    response.headers.setdefault("X-Frame-Options", "DENY")
     if response.mimetype == "text/html":
         response.headers.setdefault(
             "Content-Security-Policy",
@@ -228,7 +229,11 @@ def compare():
 @app.get("/library")
 def library():
     return render_template(
-        "library.html", docs=all_docs(), insights=all_insights(), v2_docs=v2_docs()
+        "library.html",
+        docs=all_docs(),
+        insights=all_insights(),
+        v2_docs=v2_docs(),
+        corpus_docs=corpus_catalog(),
     )
 
 
@@ -937,6 +942,27 @@ def similar_documents(doc_id):
     except (ESFailure, ValueError, OSError) as exc:
         error = str(exc)
     return render_template("similar.html", document=d, matches=matches, error=error)
+
+
+@app.get("/similar-corpus/<cid>")
+def similar_corpus(cid):
+    catalog = corpus_catalog()
+    row = catalog.get(cid)
+    if not row:
+        abort(404)
+    by_filename = {value["filename"]: key for key, value in catalog.items()}
+    matches = []
+    error = ""
+    try:
+        matches = find_related(
+            lambda method, path, body: client().api(method, path, payload=body, timeout=30),
+            CORPUS_INDEX,
+            row["filename"],
+            by_filename,
+        )
+    except (ESFailure, ValueError) as exc:
+        error = str(exc)
+    return render_template("similar_corpus.html", cid=cid, document=row, matches=matches, error=error)
 
 
 @app.get("/explain/<index>/<hit_id>")
