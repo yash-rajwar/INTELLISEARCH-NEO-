@@ -11,6 +11,7 @@ that was interrupted half-way is cleaned and re-indexed. Writes ONLY to the corp
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import hashlib
 import io
 import json
@@ -22,12 +23,14 @@ from pathlib import Path
 from settings import load_settings
 
 from chunking import chunk_lines, chunk_pages, chunk_text, strip_gutenberg
+from chunking3 import chunk_pages_v3
 from es_http import ESFailure, ESHttp
 from health import warm_up
 from mappings import ensure_corpus_index
 
 EXTENSIONS = {".pdf", ".docx", ".txt", ".md"}
 RETRY_ITEM_STATUS = {408, 429, 500, 502, 503, 504}
+CHUNKER_VERSION = 2  # 2 = chunker v2 (default), 3 = chunker v3; set by --chunker
 
 # stem -> (title, collection, tier). Unknown files get a title from the filename.
 KNOWN = {
@@ -70,7 +73,8 @@ def extract_pdf(data: bytes, cfg):
         doc.close()
     if not pages:
         raise ValueError("no extractable text (scanned PDF? OCR is not used by this CLI)")
-    return chunk_pages(
+    chunker = chunk_pages_v3 if CHUNKER_VERSION == 3 else chunk_pages
+    return chunker(
         pages, cfg.chunk_target_chars, cfg.chunk_overlap_chars, cfg.max_chunks_per_doc
     ), n
 
@@ -231,6 +235,14 @@ def main(argv=None, es=None, settings=None, out=print, sleep=time.sleep) -> int:
     ap.add_argument("--only", default="", help="comma list of file names without extension")
     ap.add_argument("--semantic", action=argparse.BooleanOptionalAction, default=True)
     ap.add_argument(
+        "--chunker", type=int, choices=(2, 3), default=2,
+        help="PDF chunker: 2 = current (default), 3 = cleaned passages (use with --index)",
+    )
+    ap.add_argument(
+        "--index", default=None,
+        help="write to this intellisearch_corpus* index instead of CORPUS_INDEX",
+    )
+    ap.add_argument(
         "--batch-size", type=int, default=10, help="chunks per bulk request (default 10)"
     )
     ap.add_argument(
@@ -241,8 +253,20 @@ def main(argv=None, es=None, settings=None, out=print, sleep=time.sleep) -> int:
     )
     args = ap.parse_args(argv)
 
+    global CHUNKER_VERSION
     cfg = settings or load_settings()
+    if args.index:
+        if dataclasses.is_dataclass(cfg):
+            cfg = dataclasses.replace(cfg, corpus_index=args.index)
+        else:
+            cfg = cfg._replace(corpus_index=args.index)
     index = cfg.corpus_index
+    if args.chunker == 3 and index == "intellisearch_corpus_v1":
+        out("Refusing: chunker 3 must not write into intellisearch_corpus_v1. "
+            "Use --index intellisearch_corpus_v2.")
+        return 2
+    CHUNKER_VERSION = args.chunker
+    out(f"Chunker v{args.chunker}, index {index}")
     if not index.startswith("intellisearch_corpus"):
         out(f"Refusing to write to {index!r}: only intellisearch_corpus* indexes may be written.")
         return 2
