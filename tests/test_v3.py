@@ -76,7 +76,10 @@ class V3ContractTests(TestCase):
             def exists(self, x):
                 return True
 
-        self.assertEqual(indices_for(Exists(), "all", doc_type=".pdf"), [UP_INDEX, V2_INDEX])
+        self.assertEqual(
+            indices_for(Exists(), "all", doc_type=".pdf"),
+            ["intellisearch_corpus_v1", UP_INDEX, V2_INDEX],
+        )
 
     def test_native_rrf_payload_has_no_track_total_hits(self):
         for mode in ("weighted", "hybrid"):

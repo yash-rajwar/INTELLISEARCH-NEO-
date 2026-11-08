@@ -613,6 +613,24 @@ def evaluation_page():
     )
 
 
+@app.get("/corpus-file/<name>")
+def corpus_file(name):
+    """Serve one original corpus document (PDF or TXT) from corpus/files."""
+    from pathlib import Path as _Path
+    from flask import abort, send_from_directory
+
+    folder = _Path(__file__).resolve().parent / "corpus" / "files"
+    suffix = _Path(name).suffix.lower()
+    if name != _Path(name).name or suffix not in (".pdf", ".txt"):
+        abort(404)
+    if not (folder / name).is_file():
+        abort(404)
+    mime = "application/pdf" if suffix == ".pdf" else "text/plain; charset=utf-8"
+    response = send_from_directory(folder, name, mimetype=mime, conditional=True)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
+
+
 @app.get("/system")
 def system_page():
     return render_template("system.html", status=system_status())

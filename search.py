@@ -8,10 +8,10 @@ from config import SOURCES, BOOK_NAMES
 from es_client import ESFailure
 
 MODES = {
-    "keyword": "BM25 keyword",
-    "semantic": "ELSER semantic",
-    "hybrid": "Equal-weight RRF",
-    "weighted": "Weighted RRF (BM25 1.0 / ELSER 1.5)",
+    "keyword": "Keyword (BM25)",
+    "semantic": "Semantic (ELSER, meaning-based)",
+    "hybrid": "Hybrid (keyword + semantic, RRF)",
+    "weighted": "Weighted hybrid (BM25 1.0 / ELSER 1.5, fused locally)",
 }
 SCOPES = {"all": "All collections", **{k: v[1] for k, v in SOURCES.items()}}
 
@@ -96,7 +96,25 @@ def fuse_ranked(lex, sem, weighted=False, cap=12):
     return out
 
 
-def _display_hits(rows):
+_STOP = set("a an and are as at be by can do does for from how i in is it of on or the to what when where which who why with you my should must".split())
+
+
+def overlap_note(query, passage):
+    """Count how many distinct query words appear in the passage. Facts only, no confidence claim."""
+    import re
+
+    words = []
+    for w in re.findall(r"[a-z0-9]+", (query or "").lower()):
+        if w not in _STOP and len(w) > 1 and w not in words:
+            words.append(w)
+    if not words:
+        return ""
+    text = (passage or "").lower()
+    found = sum(1 for w in words if w in text)
+    return f"{found} of {len(words)} query words appear in this passage"
+
+
+def _display_hits(rows, query=""):
     result = []
     for rank, hit in enumerate(rows, 1):
         src = hit.get("_source") or {}
@@ -118,6 +136,12 @@ def _display_hits(rows):
                 + doc_id
                 + (f"#page={page}" if page and filename.lower().endswith(".pdf") else "")
             )
+        elif typ == "corpus" and filename:
+            from urllib.parse import quote
+
+            source_url = "/corpus-file/" + quote(filename) + (
+                f"#page={page}" if page and filename.lower().endswith(".pdf") else ""
+            )
         elif book in BOOK_NAMES:
             source_url = (
                 "/book/"
@@ -134,6 +158,7 @@ def _display_hits(rows):
                 "type": typ,
                 "title": title,
                 "filename": filename,
+                "overlap": overlap_note(query, chunk),
                 "author": str(src.get("author") or ""),
                 "passage": chunk[:750],
                 "text": chunk,  # full chunk, used by the evaluation harness
@@ -264,7 +289,7 @@ def search(client, q, scope="all", mode="keyword", book_id="", doc_type="", size
         rows = d.get("hits", {}).get("hits", [])
         took = d.get("took", 0)
     elapsed = round((perf_counter() - started) * 1000)
-    hits = _display_hits(rows)
+    hits = _display_hits(rows, q)
     total = d.get("hits", {}).get("total", {})
     count = total.get("value", len(hits)) if isinstance(total, dict) else (total or len(hits))
     return {

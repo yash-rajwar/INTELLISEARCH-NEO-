@@ -1,6 +1,6 @@
-{% for hit in hits %}<article class="hit"><div class="hit-top"><span class="rank">#{{ hit.rank }}</span><span class="pill">{{ hit.type | replace('_',' ') }}</span>{% if hit.file_type %}<span class="pill muted">{{ hit.file_type.upper()[1:] }}</span>{% endif %}<span class="score">{% if hit.score is not none %}Score {{ '%.4f'|format(hit.score) }}{% else %}Ranked result{% endif %}</span></div>
+{% for hit in hits %}<article class="hit"><div class="hit-top"><span class="rank">#{{ hit.rank }}</span><span class="pill">{{ hit.type | replace('_',' ') }}</span>{% if hit.file_type %}<span class="pill muted">{{ hit.file_type.lstrip('.').upper() }}</span>{% endif %}<span class="score">{% if hit.score is not none %}Score {{ '%.4f'|format(hit.score) }}{% else %}Ranked result{% endif %}</span></div>
 <h3>{{ hit.title }}</h3><div class="metadata">{{ hit.author }} {% if hit.section %} · {{ hit.section }} (unverified){% endif %}{% if hit.page %} · PDF page {{ hit.page }}{% endif %}{% if hit.start_line %} · Line {{ hit.start_line }}{% endif %}</div>
-<div class="excerpt">{{ hit.passage or 'Open source or context to inspect this document.' }}</div><div class="hit-actions">
+<div class="excerpt">{{ hit.passage or 'Open source or context to inspect this document.' }}</div>{% if hit.overlap %}<div class="metadata">{{ hit.overlap }}</div>{% endif %}<div class="hit-actions">
 {% if hit.source_url %}<a href="{{ hit.source_url }}" target="_blank" rel="noopener">↗ Original source</a>{% endif %}
 {% if hit.has_context %}<a href="{{ url_for('context',index=hit.index,hit_id=hit.id) }}">◫ Source context</a>
 <a href="{{ url_for('explain_hit',index=hit.index,hit_id=hit.id,q=q if q is defined else '',mode=mode if mode is defined else 'keyword') }}">◇ Why matched?</a>
