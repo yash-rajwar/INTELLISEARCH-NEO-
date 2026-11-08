@@ -56,3 +56,14 @@ _Last updated: 2026-11-07 by session 2_
 1. Check /compare on the corpus (all four modes) and list the corpus documents
 2. Frozen evaluation questions and harness (WP-08) with k/N results saved to a file
 3. WP-07 fixes (filters, source info), UI polish, demo script
+## Session 3 update (2026-11-08)
+- Weighted RRF fused locally; file-type filter fixed; doc-hit scoring matches filenames (fdf8399, bb9ad5f)
+- Question set v2: 36 questions with source-verified gold spans (tag eval-frozen-v2)
+- Saved-evaluation page at /evaluation (works without Elasticsearch)
+- Corpus originals served at /corpus-file/<name>; search cards and source context link to them with page anchors
+- Query-word overlap line and standing no-answer note; score-based no-answer detection tested and rejected
+- Dev run 20261108-085517 (N=20 answerable): all modes 18/20 doc hit@1; passage hit@1 keyword 10, semantic 6, hybrid 9, weighted 8
+- Test run 20261108-091348, run once (N=12 answerable; semantic 11 because Q03 timed out with ELSER HTTP 408): doc hit@1 keyword 10/12, semantic 8/11, hybrid 10/12, weighted 10/12; passage hit@5 keyword 4/12, semantic 7/11, hybrid 6/12, weighted 6/12
+- Finding: no mode wins consistently; ranking flipped between dev and test; small N
+- Chunking checked: median about 1,250 to 1,340 characters, max 1,399, no oversize; many standards chunks end on headings or footers (page footers appear inside RFC chunks)
+- Open: change the default elastic password, rebind es01 to 127.0.0.1, delete zz_elser_probe (with a yes), corpus manifest and licences, update Q&A guide and slides
