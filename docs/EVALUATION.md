@@ -46,10 +46,22 @@ The test split was run **once** and must not be run again.
 
 1. **Score threshold for "no good match".** We checked whether a minimum score could separate unanswerable questions from answerable ones. It could not: keyword scores for answerable questions ranged 17.2 to 78.1, against 21.4 and 27.6 for the two unanswerable ones; semantic scores ranged 5.7 to 24.9, against 7.4 and 14.4. The ranges overlap. Instead the app shows a standing note ("may not contain an answer") and a query-word overlap line.
 2. **Weighted fusion.** It showed no advantage over plain hybrid, so it stays only as a labelled option.
+3. **Elastic Rerank.** Tried and rejected, not measured. The inference endpoint exists and the licence is a trial, but using it failed with
+   "Model definition truncated. Unable to deserialize trained model definition", and ELSER already uses about
+   2,100 MB of the 2,460 MB machine-learning memory. The setting stays off. The development-split gate was never reached.
+
+## Informal checks outside the question set (2026-11-08)
+
+These are single runs by hand, not part of the evaluation above.
+
+- Fuzzy mode, corpus scope, top 8 passages: the query "deta" returned passages containing "data" (2) and "date" (2);
+  "data" and "date" each returned both words (7 passages each for the exact word); "detail" returned "detail" (5);
+  "delta" returned 1 hit, none containing any of the five words. Only the top 8 were inspected.
+- Semantic highlighting inside the RRF retriever returned fragments on Elasticsearch 9.0.0. Some fragments are long.
 
 ## Known limitations
 
 - Small question set; one author checked the gold spans.
 - Many standards and RFC passages end on headings or page footers (chunker limitation; the corpus was not re-chunked).
-- Semantic highlighting inside rrf, linear and rerank retrievers is unverified.
+- Semantic highlighting inside rrf works (informal check above); linear and rerank retrievers were not used.
 - English-only (ELSER).

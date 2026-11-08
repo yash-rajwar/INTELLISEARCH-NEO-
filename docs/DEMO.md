@@ -18,6 +18,7 @@ Prototype on public and synthetic data. Not a deployed system.
 - [ ] Open `/system`: licence badge not red (trial ends 2026-12-07), ELSER ok.
 - [ ] Run one semantic query so ELSER is warm (first call after idle is about 30 s).
 - [ ] Presenter mode on. Close notifications. Open the tabs below, including `/evaluation`.
+- [ ] Open `/demo`: two prepared examples and the step bar are visible.
 
 ## T-10 min
 - [ ] Run one more semantic query (a warm call can still time out, HTTP 408 was seen once).
@@ -39,6 +40,7 @@ Prototype on public and synthetic data. Not a deployed system.
    Say what the typo table on `/evaluation` shows for each split. Do not say more than it shows.
 5. **Upload (60 s).** Upload a small public PDF, show the stages, then search a phrase from it in keyword and semantic mode.
 6. **Summarize / Compare documents (45 s).** Pick two corpus documents. Point at the coverage line and the aligned passages.
+   Optional: in the library, Related on a corpus document lists documents that share vocabulary (not meaning).
 7. **Honest results (90 s).** `/evaluation` or `docs/EVALUATION.md`. Say the counts, the limits, the rejected experiments (see below).
 8. **Close (30 s).** Proven: a repeatable method on public data. Not proven: real documents, security, scale.
    Proposed next step: a pilot on approved test files.
@@ -51,6 +53,11 @@ Prototype on public and synthetic data. Not a deployed system.
 - Rejected: a score threshold for "no good match" (score ranges of answerable and unanswerable questions overlap) and weighted fusion (no advantage over plain hybrid).
 - Real miss: Q13 (national-security refusal in the RTI Act) is a genuine keyword miss.
 - Never quote a single accuracy percentage.
+
+## Not part of the demo
+- Local AI answers (Ollama is not on the office computer). The Ask page shows cited evidence only.
+- Reranking (tried on the laptop; the model could not be loaded).
+- OCR (Tesseract language data is missing).
 
 ## If something fails
 - **ELSER timeout:** the app labels the keyword fallback. Say so, switch to keyword mode, continue.

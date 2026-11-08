@@ -27,10 +27,20 @@ _Last updated: 2026-11-08_
 | Batch 15 | Navigation rewrite (base.html) | done | 8df402c | five nav groups, skip link |
 | Batch 16 | /evaluation page shows only the two cited runs | done | 1144d95, a322352 | 16c (route test in a separate process): see git log |
 | Batch 17 | Startup banner text, this ledger | done | see git log | |
-| WP-10 | Optional Elastic Rerank | deferred | | after the demo |
-| WP-09 | Neighbour context | not confirmed here | | check git log before claiming it |
-| WP-14a | UI level U1 | partly | 8df402c | navigation and layout done; full U1 checklist not reviewed |
-| WP-17, WP-18 | README, CHANGELOG, traceability note, security hygiene | in progress | | next batch |
+| WP-10 | Optional Elastic Rerank | tested and rejected | | The endpoint exists, but the model could not be loaded on this cluster (Model definition truncated), and ELSER already uses most of the 2,460 MB machine-learning memory. ENABLE_RERANK stays off. The development-split gate was never reached |
+| WP-09 | Neighbour context | partly | ef0a2cf, a71a39b | Display and the CONTEXT_NEIGHBOURS setting exist. Not built: one mget per page, and the passage-hit-with-neighbours metric |
+| WP-14a | UI level U1 | partly | 8df402c | navigation, layout, demo step bar done; full U1 checklist not reviewed; U3 not started |
+| Batch 18 | README, CHANGELOG, demo guide, traceability note | done | 227c378 | |
+| Batch 19 | Loopback guard, inline header on corpus files, CONTEXT_NEIGHBOURS | done | a71a39b | 19b fixed an import-order problem in the new test |
+| Batch 20 | Compare runs its methods in two parallel phases | done | see git log | parallel.py |
+| Batch 21 | Related documents for the corpus, corpus list in the library, X-Frame-Options DENY | done | see git log | related.py; shared vocabulary, not meaning |
+| Batch 22 | Ask: clickable citations, copy button, Ollama status, OLLAMA settings from .env | done | see git log | Ollama is not part of the demo |
+| Batch 23 | Header tests, live smoke tests, pinned requirements, CI file | done | dab1e06 | live tests: 5 passed, 1 skipped (ELSER cold) |
+| Batch 24 | Demo page corpus examples and step bar, system page V4 label and rerank line | done | see git log | |
+| Batch 25 | Documentation update, docs/ARCHITECTURE.md | done | see git log | |
+| WP-18 | Security hygiene | partly | see git log | headers checked by tests; loopback guard; repeat the secret scan before any push |
+| WP-16 (rest) | Type hints, docstrings, single DB initialiser, caching | not done | | reported as not done |
+| WP-17 (rest) | docker-compose file, scripts, screenshots, user guide, test report | not done | | reported as not done |
 
 Status values: not started, in progress, done, deferred, partly.
 
@@ -43,6 +53,7 @@ Status values: not started, in progress, done, deferred, partly.
 - Corpus intellisearch_corpus_v1: 7,102 passages by _count (_cat showed a larger number, probably hidden ELSER sub-documents), 18 documents; file_type stored as "pdf" (no dot)
 - Corpus text cache data/extracted is not in git: on a new machine run python warm_corpus_text.py first (about 2 minutes), otherwise the first click on SP 800-53 takes about 80 s
 - OCR not ready (Tesseract language data missing); Ollama not configured: both optional, not part of the demo
+- Machine-learning memory on this cluster: about 2,460 MB, of which ELSER uses about 2,100 MB. Do not start extra model deployments before the demo
 - Kibana Dev Tools times out at about 30 s; use curl with --max-time and JSON in a file
 - pip needs the PostgreSQL CA variables cleared (SSL_CERT_FILE, REQUESTS_CA_BUNDLE, CURL_CA_BUNDLE, PIP_CERT)
 - es01 is published on 0.0.0.0:9200 (see Open problems)
@@ -52,8 +63,8 @@ Status values: not started, in progress, done, deferred, partly.
 ## [VERIFY] results
 - ELSER answers a query: CONFIRMED
 - Weighted RRF weight accepted on 9.0.0: NO, the weighted retriever format is rejected (HTTP 400); weighted RRF is fused locally
-- Semantic highlight inside rrf: not verified
-- linear / text_similarity_reranker / .rerank-v1 on 9.0.0: not checked (rerank deferred)
+- Semantic highlight inside rrf: CONFIRMED on 9.0.0 (live check 2026-11-08; fragments can be long)
+- text_similarity_reranker / .rerank-v1 on 9.0.0: the endpoint exists and the licence is trial, but the model fails to load (Model definition truncated). linear retriever: not checked
 
 ## Decisions
 - 2026-11-07: build and rehearse on the laptop; push to GitHub at the end
@@ -61,13 +72,14 @@ Status values: not started, in progress, done, deferred, partly.
 - 2026-11-07: git add by file name, not -A
 - 2026-11-07: corpus is an always-on source and the default scope
 - No app factory, no waitress
-- Related documents for the corpus: dropped
-- Rerank (WP-10): after the demo
-- Compare runs the methods one after another (not in parallel); after an ELSER timeout hybrid and weighted are labelled skipped
+- Related documents for the corpus: built (batch 21). It compares shared vocabulary (more-like-this), not meaning
+- Rerank (WP-10): tried on the demo laptop on 2026-11-08 and rejected (the model could not be loaded)
+- Compare runs keyword and semantic together, then hybrid and weighted together; after an ELSER timeout hybrid and weighted are labelled skipped
 - Compare markers: top results of keyword and semantic search are compared by document title; a fallback is flagged and not compared
 - /evaluation shows only the two cited runs (dev 20261108-085517, test 20261108-091348); other saved runs stay on disk but are not shown
 - The test split (tag eval-frozen-v2) was run once and is never run again
 - Present from the laptop unless the office machine already has Elasticsearch tested
+- Ollama (local AI answers) is dropped from the demo: the office computer does not have it. The Ask page shows cited evidence only
 
 ## Evaluation (cited runs, hits/questions, never percentages)
 Development split, run 20261108-085517, N=20 answerable:
@@ -97,9 +109,10 @@ Not cited (older runs with a since-fixed scoring bug, and an old 23-question dra
 - Manual UI checks not yet reported: sidebar fit at the demo screen size, Tab shows the skip link, Summarize time on SP 800-53 (over 20 s means do not demo it live), aligned passages in Compare documents on corpus documents
 - ELSER can time out even when warm: open the warm-up page before presenting
 - Later commits are not pushed to GitHub (intentional)
+- ruff reported 192 findings at the last check (35 auto-fixable); CI therefore runs the tests only. Clean up after the demo
 - Q&A guide, reports and slides need updating after the code changes
 
 ## Next 3 steps
-1. README.md, CHANGELOG.md, DEMO.md update, traceability note (Indexer findings to V4 behaviour)
-2. Slides (about 7, real hits/questions counts, legacy results kept separate from this evaluation)
-3. Two timed rehearsals from a cold ELSER with a backup recording, then tag demo-2026-11-09
+1. Slides (about 7, real hits/questions counts, legacy results kept separate from this evaluation) and the Q&A guide
+2. The manual checks in the open problems list, then two timed rehearsals from a cold ELSER with a backup recording
+3. Tag demo-2026-11-09 after the rehearsals pass; after the demo: rebind es01, change the password, push to a private repository

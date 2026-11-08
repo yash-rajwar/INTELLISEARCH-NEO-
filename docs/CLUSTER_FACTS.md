@@ -25,6 +25,13 @@ Verified on the demo laptop, November 2026.
 | legacy indexes | hidden unless `LEGACY_ENABLED=true` | never modified |
 | `zz_elser_probe` | scratch index | delete only after explicit approval |
 
+## Machine learning memory and rerank (checked 2026-11-08)
+
+- Elasticsearch reported about 2,460 MB of machine-learning memory; the ELSER deployment used about 2,100 MB of it.
+- The rerank inference endpoint exists, but using it failed with "Model definition truncated. Unable to deserialize
+  trained model definition". Reranking is therefore off.
+- Do not start extra model deployments on this cluster before the demo.
+
 ## Known behaviour
 
 - Weighted retriever format is rejected by 9.0.0 (HTTP 400); weighted RRF is fused locally.

@@ -10,7 +10,8 @@ Elasticsearch.
 - Corpus results link back to the original document and page.
 - You can upload your own PDF, DOCX or TXT file, search it, and delete it again.
 - Summaries and side-by-side comparison of two documents, including long corpus PDFs.
-- An evidence page that checks citations, and an optional local LLM answer (Ollama, loopback only).
+- An evidence page that checks citations, and an optional local LLM answer (Ollama, loopback only; not used in the demo).
+- Related documents for the corpus, found by shared vocabulary (not by meaning).
 - A system page (licence, ELSER, corpus counts) and an evaluation page that shows saved results.
 
 ## What it is not
@@ -51,6 +52,8 @@ first click on the largest document takes about 80 seconds. See `docs/CLUSTER_FA
 used in development and `docs/OFFICE_SETUP.md` for setting Elasticsearch up on another machine.
 
 Run the tests (offline, no Elasticsearch needed): `python -m pytest -q`
+Live smoke tests need a running cluster and are skipped unless you set `RUN_LIVE=1`; they are in `tests/test_live.py`.
+`requirements-lock.txt` has the exact versions used in development.
 
 ## Corpus
 
@@ -74,8 +77,12 @@ for a test split that was run once. Counts are hits/questions.
 - No mode wins consistently, and the order changed between the two splits. With 11 to 20 questions per
   split, differences of one or two questions are within noise.
 
+Two experiments were tried and not kept: a score threshold for "no good match" (the score ranges overlap) and
+Elastic Rerank (its model could not be loaded on the development laptop, so it was never measured).
+
 ## More documents
 
+- `docs/ARCHITECTURE.md`: components, data flow, index design and the search methods.
 - `docs/DEMO.md`: demo script, checklists and fallbacks.
 - `docs/TRACEABILITY.md`: earlier Indexer findings and the behaviour that addresses each one.
 - `docs/PROGRESS.md`: progress ledger, decisions and open problems.
@@ -86,6 +93,8 @@ for a test split that was run once. Counts are hits/questions.
 - Small question set; one author checked the answers.
 - Many standards and RFC passages end on headings or page footers (chunker limitation).
 - ELSER can time out even when warm. Warm it up before presenting.
+- Elastic Rerank could not run on the development laptop; it is off.
+- The code base still has style findings from ruff (192 at the last check).
 - The Elasticsearch trial licence ends on 2026-12-07; keyword search still works afterwards.
 - The development Elasticsearch container is published on all network interfaces with the default
   password until it is rebound to 127.0.0.1. Use it on a trusted network only.

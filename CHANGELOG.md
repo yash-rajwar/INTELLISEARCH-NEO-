@@ -26,6 +26,9 @@ Built from the commit messages on the `v4-upgrade` branch. `git log` has the det
 - Corpus originals served by the app; source links with page anchors; query-word overlap line;
   standing no-answer note; mode labels.
 - `LOG_QUERIES` switch; highlighted passages.
+- Compare runs keyword and semantic together, then hybrid and weighted together (skipped after an ELSER timeout).
+- `CONTEXT_NEIGHBOURS` setting: how many neighbouring passages the context page shows.
+- Related documents for corpus documents (shared vocabulary, not meaning), and a corpus list in the library.
 
 ### Uploads
 - Uploads without silent truncation, ELSER on by default, duplicate detection by content hash.
@@ -44,17 +47,28 @@ Built from the commit messages on the `v4-upgrade` branch. `git log` has the det
   (found by both, only by meaning, only by keywords) and a summary sentence.
 - Ask page checks, Ollama status, citation validation and an evidence notice.
 - System page: licence, ELSER, corpus counts, a Test now button and a diagnostics report.
+- Ask page: citation numbers link to the evidence card, a copy button, and Ollama status. `OLLAMA_MODEL` and
+  `OLLAMA_URL` in `.env` now work. Local AI answers are optional and not part of the demo.
+- System page reports that reranking is off (tried and rejected on this machine).
 
 ### Interface
 - Licence chip in the top bar and presenter mode.
 - Grouped navigation (five groups), skip link, page titles, sidebar that fits short screens.
 - Startup banner no longer carries the V3 label.
+- Demo page shows prepared corpus examples and a numbered step bar.
+
+### Tests and tooling
+- `X-Frame-Options` is `DENY`; header tests run the app in a separate process.
+- `ALLOW_NON_LOOPBACK` guard; live smoke tests that run only with `RUN_LIVE=1`.
+- Runtime requirements pinned, plus `requirements-lock.txt`; a CI file that runs the offline tests.
 
 ### Evaluation
 - Evaluation harness with metrics, runner and report writer; question set v2 (36 questions with
   source-verified gold spans, tag `eval-frozen-v2`); development run and one test run.
 - `/evaluation` page: reads saved files only, shows the two cited runs with caveats, hits/questions tables
   and bars.
+- Elastic Rerank tried and rejected on the demo laptop (the model could not be loaded); semantic
+  highlighting inside RRF checked and works.
 
 ### Documentation
 - README, changelog, demo guide, office setup guide, cluster facts, evaluation notes, progress ledger,
