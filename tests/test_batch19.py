@@ -3,7 +3,6 @@
 import pytest
 
 from netguard import check_host, is_loopback
-from search import neighbour_hit_ids
 from settings import load_settings
 
 
@@ -30,10 +29,14 @@ def test_settings_defaults_and_overrides():
 
 
 def test_neighbour_count_default_is_unchanged():
+    from search import neighbour_hit_ids
+
     assert neighbour_hit_ids("some_index", "abc", 5) == [(4, "abc_0004"), (6, "abc_0006")]
 
 
 def test_neighbour_count_two_and_edges():
+    from search import neighbour_hit_ids
+
     ids = neighbour_hit_ids("some_index", "abc", 1, count=2)
     assert [k for k, _ in ids] == [0, 2, 3]
     assert neighbour_hit_ids("some_index", "abc", 5, count=0) == []
