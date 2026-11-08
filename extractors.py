@@ -7,7 +7,7 @@ from config import MAX_PAGES
 MAX_PASSAGES = 3000
 
 
-def text_pages(data: bytes, extension: str, ocr=False):
+def text_pages(data: bytes, extension: str, ocr=False, max_pages=None):
     if extension == ".txt":
         text = data.decode("utf-8-sig", errors="replace").replace("\x00", "")
         return [{"page": None, "text": text}], 0
@@ -17,8 +17,9 @@ def text_pages(data: bytes, extension: str, ocr=False):
         reader = PdfReader(io.BytesIO(data), strict=False)
         if reader.is_encrypted:
             raise ValueError("Encrypted PDFs are not supported. Please use an unencrypted copy.")
-        if len(reader.pages) > MAX_PAGES:
-            raise ValueError(f"PDF exceeds {MAX_PAGES} pages.")
+        limit = MAX_PAGES if max_pages is None else max_pages
+        if len(reader.pages) > limit:
+            raise ValueError(f"PDF exceeds {limit} pages.")
         output = []
         missing = []
         for i, pg in enumerate(reader.pages, 1):

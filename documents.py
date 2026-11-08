@@ -109,7 +109,7 @@ def read_source(ref):
         if cache.is_file():
             txt = cache.read_text(encoding="utf-8")
         else:
-            pages, _ = text_pages(path.read_bytes(), path.suffix.lower(), ocr=False)
+            pages, _ = text_pages(path.read_bytes(), path.suffix.lower(), ocr=False, max_pages=1000)
             txt = "\n\n".join(p["text"] for p in pages)
             try:
                 cache.parent.mkdir(parents=True, exist_ok=True)
