@@ -62,6 +62,7 @@ from extractors import text_pages, make_chunks
 from es_client import ES, ESFailure
 from search import MODES, SCOPES, search, result_limit, neighbour_hit_ids
 from intelligence import classify, summarize, compare_texts, explain, evidence_reply
+from longdoc import summarize_long, aligned_passages
 from documents import choices, read_source
 from llm import enabled as llm_enabled, generate as llm_generate, status as llm_status
 from askcheck import check_citations, no_term_overlap
@@ -866,7 +867,7 @@ def summarize_document():
             source = read_source(ref)
             report = {
                 "title": source["title"],
-                "summary": summarize(source["text"], 6),
+                "summary": summarize_long(source["text"], 6),
                 "classification": classify(source["text"]),
                 "source": source,
             }
@@ -903,7 +904,13 @@ def document_compare():
                 raise ValueError("Choose two different documents.")
             a = read_source(left)
             b = read_source(right)
-            report = {"a": a, "b": b, "metrics": compare_texts(a["text"], b["text"])}
+            report = {
+                "a": a,
+                "b": b,
+                "metrics": compare_texts(a["text"], b["text"]),
+                "aligned": aligned_passages(a["text"], b["text"]),
+                "long": max(len(a["text"]), len(b["text"])) > 200000,
+            }
             if request.method == "POST" and request.form.get("use_llm") == "yes":
                 if not llm_enabled():
                     raise ValueError("Optional Ollama model not configured.")
