@@ -1,0 +1,15 @@
+{% for g in groups %}{% set b = g.best %}
+<article class="hit"><div class="hit-top"><span class="rank">#{{ g.rank }}</span><span class="pill">{{ g.type | replace('_',' ') }}</span>{% if g.file_type %}<span class="pill muted">{{ g.file_type.lstrip('.').upper() }}</span>{% endif %}<span class="score">{{ g.hits|length }} matching passage{{ '' if g.hits|length == 1 else 's' }}</span></div>
+<h3>{{ g.title }}</h3>
+<div class="metadata">{% if g.pages %}Pages {{ g.pages|join(', ') }}{% endif %}{% if b.start_line %}{% if g.pages %} &middot; {% endif %}Best match at line {{ b.start_line }}{% endif %}{% if b.author %} &middot; {{ b.author }}{% endif %}</div>
+<div class="excerpt">{{ b.passage|hl(q) }}</div>
+{% if b.overlap %}<div class="metadata">{{ b.overlap }}</div>{% endif %}
+<div class="hit-actions">
+{% if b.source_url %}<a href="{{ b.source_url }}" target="_blank" rel="noopener">Original source{% if b.page %} (page {{ b.page }}){% endif %}</a>{% endif %}
+{% if b.has_context %}<a href="{{ url_for('context',index=b.index,hit_id=b.id) }}">Source context</a>
+<a href="{{ url_for('explain_hit',index=b.index,hit_id=b.id,q=q,mode=mode) }}">Why matched?</a>{% endif %}
+</div>
+{% if g.hits|length > 1 %}<details class="groupmore"><summary>Show {{ g.hits|length - 1 }} more matching passage(s)</summary>
+{% for h in g.hits[1:] %}<div class="sub"><div class="metadata">{% if h.page %}Page {{ h.page }}{% endif %}{% if h.start_line %}Line {{ h.start_line }}{% endif %}{% if h.source_url %} &middot; <a href="{{ h.source_url }}" target="_blank" rel="noopener">open</a>{% endif %}</div>
+<div class="excerpt">{{ h.passage[:400]|hl(q) }}</div></div>{% endfor %}</details>{% endif %}
+</article>{% else %}<div class="empty">No matches. Try a different query or select a broader collection.</div>{% endfor %}

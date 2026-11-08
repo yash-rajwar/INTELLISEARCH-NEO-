@@ -114,6 +114,31 @@ def overlap_note(query, passage):
     return f"{found} of {len(words)} query words appear in this passage"
 
 
+def highlight_html(text, query):
+    """Escape the text, then wrap query words in <mark>. Never marks up raw text."""
+    import re
+
+    from markupsafe import Markup, escape
+
+    text = text or ""
+    words = []
+    for w in re.findall(r"[A-Za-z0-9]+", query or ""):
+        if w.lower() not in _STOP and len(w) > 1 and w.lower() not in [x.lower() for x in words]:
+            words.append(w)
+    if not words:
+        return escape(text)
+    words.sort(key=len, reverse=True)
+    pattern = re.compile(r"\b(" + "|".join(re.escape(w) for w in words) + r")\b", re.IGNORECASE)
+    parts = []
+    last = 0
+    for m in pattern.finditer(text):
+        parts.append(escape(text[last : m.start()]))
+        parts.append(Markup("<mark>") + escape(m.group(0)) + Markup("</mark>"))
+        last = m.end()
+    parts.append(escape(text[last:]))
+    return Markup("").join(parts)
+
+
 def _display_hits(rows, query=""):
     result = []
     for rank, hit in enumerate(rows, 1):
@@ -158,6 +183,7 @@ def _display_hits(rows, query=""):
                 "type": typ,
                 "title": title,
                 "filename": filename,
+                "document_id": doc_id,
                 "overlap": overlap_note(query, chunk),
                 "author": str(src.get("author") or ""),
                 "passage": chunk[:750],
@@ -173,6 +199,34 @@ def _display_hits(rows, query=""):
             }
         )
     return result
+
+
+def group_hits(hits):
+    """Group chunk hits by document. A group's rank is the rank of its best chunk."""
+    groups = {}
+    for h in hits:
+        key = (h.get("index"), h.get("document_id") or h.get("filename") or h.get("title"))
+        g = groups.get(key)
+        if g is None:
+            g = {
+                "title": h.get("title"),
+                "type": h.get("type"),
+                "file_type": h.get("file_type"),
+                "best": h,
+                "hits": [],
+                "pages": [],
+            }
+            groups[key] = g
+        g["hits"].append(h)
+        page = h.get("page")
+        if page and page not in g["pages"]:
+            g["pages"].append(page)
+    out = []
+    for rank, g in enumerate(groups.values(), 1):
+        g["rank"] = rank
+        g["pages"].sort()
+        out.append(g)
+    return out
 
 
 def search(client, q, scope="all", mode="keyword", book_id="", doc_type="", size=12):
@@ -294,6 +348,7 @@ def search(client, q, scope="all", mode="keyword", book_id="", doc_type="", size
     count = total.get("value", len(hits)) if isinstance(total, dict) else (total or len(hits))
     return {
         "hits": hits,
+        "groups": group_hits(hits),
         "count": count,
         "took": took,
         "elapsed_ms": elapsed,

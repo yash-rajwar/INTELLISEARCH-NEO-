@@ -120,6 +120,25 @@ def client():
     return ES_CLIENT
 
 
+from search import highlight_html  # noqa: E402
+
+app.jinja_env.filters["hl"] = highlight_html
+
+
+@app.after_request
+def security_headers(response):
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("Referrer-Policy", "no-referrer")
+    response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+    if response.mimetype == "text/html":
+        response.headers.setdefault(
+            "Content-Security-Policy",
+            "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; "
+            "script-src 'self' 'unsafe-inline'; frame-ancestors 'none'",
+        )
+    return response
+
+
 @app.get("/")
 def home():
     try:
@@ -151,7 +170,7 @@ def search_page():
     if q:
         started = time.monotonic()
         try:
-            result = search(client(), q, scope, mode, book_id, doc_type)
+            result = search(client(), q, scope, mode, book_id, doc_type, size=30)
         except (ESFailure, ValueError, KeyError) as exc:
             error = str(exc)
             log.warning("search failed (scope=%s mode=%s): %s", scope, mode, exc)

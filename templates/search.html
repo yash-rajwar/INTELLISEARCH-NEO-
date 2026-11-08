@@ -5,6 +5,8 @@
 {% if result %}<div class="resultsbar"><div><b>{{ result.count }}</b> result(s) · <b>{{ result.elapsed_ms }} ms</b> HTTP · Elasticsearch {{ result.took }} ms · <b>{{ result.mode_used }}</b></div><div><a href="{{ url_for('compare',q=q,scope=scope) }}">Compare rankings →</a> <a href="{{ url_for('export_results',q=q,scope=scope,mode=mode) }}">Download CSV ↓</a></div></div>
 <div class="alert info">Search always returns its best matches, even when the documents contain no answer. Check each passage before relying on it.</div>
 {% if result.warning %}<div class="alert info">{{ result.warning }}</div>{% endif %}
-<div class="results">{% set hits=result.hits %}{% include '_hits.html' %}</div>
+{% set flat = request.args.get('view') == 'flat' %}
+<p class="metadata">{{ result.hits|length }} passage(s) from {{ result.groups|length }} document(s) &middot; {% if flat %}<a href="{{ url_for('search_page', **dict(request.args.to_dict(), view='grouped')) }}">Group by document</a>{% else %}<a href="{{ url_for('search_page', **dict(request.args.to_dict(), view='flat')) }}">Show every passage</a>{% endif %}</p>
+<div class="results">{% if flat %}{% set hits=result.hits %}{% include '_hits.html' %}{% else %}{% set groups=result.groups %}{% include '_groups.html' %}{% endif %}</div>
 {% elif not q %}<div class="onboarding"><span>✧</span><h2>Start with a question</h2><p>Choose a collection and retrieval method. Try ELSER to locate conceptually similar passages.</p></div>{% endif %}
 {% endblock %}

@@ -10,3 +10,11 @@
 @media(max-width:1100px){.quick-actions{grid-template-columns:repeat(2,1fr)}}@media(max-width:770px){.evidence-grid{grid-template-columns:1fr}.quick-actions{grid-template-columns:repeat(2,1fr)}.sidebar nav{flex-wrap:wrap;overflow:visible}.sidebar nav a{font-size:.73rem}}@media(max-width:430px){.quick-actions{grid-template-columns:1fr}}
 /* V3 presentation polish: no remote resources needed */
 .hero h2{color:white;font-size:1.65rem;margin:0 0 8px}.demo-case{display:flex;justify-content:space-between;align-items:center;gap:18px;border-top:1px solid #eef0f5;padding:19px 0}.demo-case strong{margin-left:12px}.demo-case p{margin:8px 0}.demo-actions{display:flex;gap:8px;flex-wrap:wrap}.demo-actions .buttonlink{margin:0;font-size:.76rem;padding:9px 12px}.demo-list{line-height:1.95;padding-left:20px}.kibana{overflow:auto;padding:18px;background:#111a35;color:#dce7fa;border-radius:10px;line-height:1.75;font-size:.82rem}.top-chip{font-weight:800}.stat strong{overflow-wrap:anywhere}.hit:hover{box-shadow:0 12px 30px #111b390d;transform:translateY(-1px);transition:transform .14s}.panel{overflow-wrap:anywhere}@media(max-width:850px){.demo-case{display:block}.demo-actions{margin-top:12px}}
+
+/* Batch 1: contrast, highlight, focus (appended; later rules win) */
+mark{background:#ffe58f;color:#24314c;padding:0 2px;border-radius:3px}
+.metadata,.score,.topbar,footer{color:#5b6779}
+.groupmore{margin-top:8px}
+.groupmore summary{cursor:pointer;color:#2355a6}
+.groupmore .sub{border-top:1px solid #e5eaf2;padding:8px 0}
+:focus-visible{outline:2px solid #6552c7;outline-offset:2px}
