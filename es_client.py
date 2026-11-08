@@ -1,6 +1,7 @@
 """Allowlisted Elasticsearch operations; all legacy indexes remain strictly read-only."""
 
 import json
+import re
 import time
 import requests
 from urllib.parse import quote
@@ -251,6 +252,21 @@ class ES:
                     else "Bulk indexing error"
                 )
         self._counts_cache = None  # the collection counts have changed
+
+    def delete_upload_chunks(self, doc_id):
+        """Delete all passages of ONE uploaded document. Only the uploads index is touched."""
+        if not re.fullmatch(r"[a-f0-9]{32}", doc_id or ""):
+            raise ESFailure("Invalid document id.")
+        if not self.exists(UP_INDEX):
+            return 0
+        res = self.api(
+            "POST",
+            UP_INDEX + "/_delete_by_query?refresh=true&conflicts=proceed",
+            payload={"query": {"term": {"document_id": doc_id}}},
+            timeout=60,
+        )
+        self._counts_cache = None  # the collection counts have changed
+        return int(res.get("deleted", 0))
 
     def get_hit(self, index, doc_id):
         if index not in [x[0] for x in SOURCES.values()]:

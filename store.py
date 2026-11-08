@@ -210,3 +210,11 @@ def remember_hash(digest, doc_id):
 def forget_hash(doc_id):
     with db() as c:
         c.execute("DELETE FROM upload_hashes WHERE doc_id = ?", (doc_id,))
+
+
+def remove_upload(doc_id):
+    # Removes every local record of one upload (not the files, not Elasticsearch).
+    with db() as c:
+        c.execute("DELETE FROM uploads WHERE doc_id = ?", (doc_id,))
+        c.execute("DELETE FROM insights WHERE doc_id = ?", (doc_id,))
+        c.execute("DELETE FROM upload_hashes WHERE doc_id = ?", (doc_id,))

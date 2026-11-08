@@ -54,6 +54,8 @@ from store import (
     recent_queries,
     find_hash,
     remember_hash,
+    forget_hash,
+    remove_upload,
 )
 from extractors import text_pages, make_chunks
 from es_client import ES, ESFailure
@@ -349,7 +351,46 @@ def upload():
     except (ValueError, RuntimeError, OSError, ESFailure, KeyError, ImportError) as exc:
         log.warning("upload failed for %s: %s", filename, exc)
         save_doc(doc_id, filename, ext, len(data), status="error", error=str(exc))
+        _cleanup_failed_upload(doc_id, ext)
         flash("Upload could not be indexed: " + str(exc)[:450], "error")
+    return redirect(url_for("library"))
+
+
+def _remove_upload_files(doc_id, ext):
+    # Best effort: delete the saved original and the extracted-text cache.
+    for path in (UPLOADS / (doc_id + ext), DATA / "extracted" / (doc_id + ".txt")):
+        try:
+            path.unlink(missing_ok=True)
+        except OSError as exc:
+            log.warning("could not remove %s: %s", path, exc)
+
+
+def _cleanup_failed_upload(doc_id, ext):
+    # A failed upload must not leave half-indexed passages behind.
+    try:
+        client().delete_upload_chunks(doc_id)
+    except ESFailure as exc:
+        log.warning("cleanup of failed upload %s did not finish: %s", doc_id, exc)
+    forget_hash(doc_id)
+    _remove_upload_files(doc_id, ext)
+
+
+@app.post("/delete/<doc_id>")
+def delete_upload_route(doc_id):
+    if not re.fullmatch(r"[a-f0-9]{32}", doc_id):
+        abort(404)
+    d = upload_doc(doc_id)
+    if not d:
+        abort(404)
+    try:
+        removed = client().delete_upload_chunks(doc_id)
+    except ESFailure as exc:
+        log.warning("delete failed for %s: %s", doc_id, exc)
+        flash("Could not delete from Elasticsearch, nothing was removed: " + str(exc)[:300], "error")
+        return redirect(url_for("library"))
+    _remove_upload_files(doc_id, d["file_type"])
+    remove_upload(doc_id)
+    flash(f"Deleted {d['filename']} ({removed} passages removed).", "success")
     return redirect(url_for("library"))
 
 
