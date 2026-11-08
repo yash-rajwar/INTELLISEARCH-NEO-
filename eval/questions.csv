@@ -1,35 +1,37 @@
 id,split,type,question,expected_doc,expected_page,expected_lines,gold_span,notes
-Q01,dev,keyword,"three-way handshake","RFC 9293: Transmission Control Protocol",,,,
-Q02,dev,keyword,"0-RTT early data replay","RFC 8446: TLS 1.3",,,,
-Q03,dev,keyword,"idempotent methods","RFC 9110: HTTP Semantics",,,,
-Q04,dev,keyword,"Public Information Officer","Right to Information Act, 2005 (India) with DoPT Guide",,,,
-Q05,dev,keyword,"Data Fiduciary","Digital Personal Data Protection Act, 2023 (India)",,,,
-Q06,dev,keyword,"section 69A blocking of information","Information Technology Act, 2000 (India)",,,,
-Q07,dev,keyword,"account management control AC-2","NIST SP 800-53 Rev. 5: Security and Privacy Controls | NIST SP 800-171 Rev. 3: Protecting CUI",,,,two documents accepted
-Q08,test,keyword,"Govern Identify Protect Detect Respond Recover","NIST Cybersecurity Framework 2.0 | NIST SP 800-61 Rev. 3: Incident Response",,,,two documents accepted
-Q09,test,keyword,"technology readiness level","NASA Systems Engineering Handbook",,,,
-Q10,test,keyword,"Govern Map Measure Manage","NIST AI Risk Management Framework 1.0",,,,
-Q11,dev,conceptual,"what should an organization do after discovering an intruder in its network","NIST SP 800-61 Rev. 3: Incident Response",,,,different vocabulary
-Q12,dev,conceptual,"a citizen asks the government for official records and gets no reply in time","Right to Information Act, 2005 (India) with DoPT Guide",,,,different vocabulary
-Q13,dev,conceptual,"a company must tell people why it collects their personal information and get their agreement","Digital Personal Data Protection Act, 2023 (India)",,,,different vocabulary
-Q14,dev,conceptual,"the government can order websites to hide content for the sake of national security","Information Technology Act, 2000 (India)",,,,different vocabulary
-Q15,dev,conceptual,"how a secure web connection keeps eavesdroppers from reading the traffic","RFC 8446: TLS 1.3",,,,different vocabulary
-Q16,dev,conceptual,"what happens when the receiver cannot keep up with the data the sender is pushing","RFC 9293: Transmission Control Protocol",,,,different vocabulary
-Q17,dev,conceptual,"making sure the finished system really meets what the customer needs","NASA Systems Engineering Handbook",,,,different vocabulary
-Q18,dev,conceptual,"protecting sensitive government information that is held by contractors","NIST SP 800-171 Rev. 3: Protecting CUI",,,,different vocabulary
-Q19,test,conceptual,"harms that artificial intelligence systems can cause to people and society","NIST AI Risk Management Framework 1.0",,,,different vocabulary
-Q20,test,conceptual,"a king hires a detective to get back an embarrassing photograph","The Adventures of Sherlock Holmes (Conan Doyle)",,,,different vocabulary
-Q21,dev,long,"How does the server decide which version of a resource to send when the client states several preferences?","RFC 9110: HTTP Semantics",,,,
-Q22,dev,long,"What does the creature demand from his creator before he promises to leave humankind alone?","Frankenstein (Mary Shelley)",,,,
-Q23,dev,long,"Which passage says that all warfare is based on deception?","The Art of War (Sun Tzu, tr. Giles)",,,,
-Q24,test,long,"How does the traveller describe seeing the owner of the castle climbing down the outer wall?","Dracula (Bram Stoker)",,,,
-Q25,test,long,"Why does Elizabeth refuse the first marriage proposal she gets from the proud gentleman?","Pride and Prejudice (Jane Austen)",,,,
-Q26,dev,typo,"incidnet response containment eradication","NIST SP 800-61 Rev. 3: Incident Response",,,,
-Q27,dev,typo,"transmision control protocal window","RFC 9293: Transmission Control Protocol",,,,
-Q28,dev,typo,"informaton technology act intermediry liability","Information Technology Act, 2000 (India)",,,,
-Q29,test,typo,"data prinicpal rights and duties","Digital Personal Data Protection Act, 2023 (India)",,,,
-Q30,test,typo,"sytems engineering lifecyle phases","NASA Systems Engineering Handbook",,,,
-Q31,dev,long,"What is the recommended dose of ibuprofen for young children?",,,,,no answer in the corpus
-Q32,dev,long,"Who won the football World Cup in 2022?",,,,,no answer in the corpus
-Q33,test,long,"What is the penalty for tax evasion under the Income Tax Act?",,,,,no answer in the corpus
-Q34,test,long,"How do I configure an ingress controller in Kubernetes?",,,,,no answer in the corpus
+Q01,dev,keyword,Data Fiduciary definition,india-dpdp-2023.pdf,2,,determines the purpose and means of processing of personal data,
+Q02,dev,keyword,cyber terrorism,india-it-act-2000.pdf,25,,to strike terror in the people or any section of the people,
+Q03,test,keyword,Central Public Information Officer thirty days,india-rti-2005.pdf,6,,within thirty days of the receipt of the request,Act text appears twice in this PDF; also at: 34
+Q04,dev,keyword,GOVERN MAP MEASURE MANAGE core functions,nist-ai-rmf-1.pdf,5,,"GOVERN, MAP, MEASURE, and MANAGE","also at: 8, 25, 25, 39"
+Q05,dev,keyword,six functions of the Cybersecurity Framework Core,nist-csf-2.pdf,8,,"GOVERN, IDENTIFY, PROTECT, DETECT, RESPOND, and RECOVER",gold tentative; also at: 31
+Q06,test,keyword,HelloRetryRequest,rfc-8446.txt,,1814-1815,if it is able to find an acceptable set of parameters but the ClientHello does not contain sufficient information,
+Q07,dev,keyword,404 Not Found,rfc-9110.pdf,138,,did not find a current representation for the target resource,
+Q08,dev,keyword,idempotent,rfc-9110.pdf,73,,the intended effect on the server of multiple identical requests with that method is the same as the effect for a single such request,
+Q09,dev,keyword,warfare deception,gutenberg-art-of-war.txt,,1769-1769,All warfare is based on deception,
+Q10,test,keyword,least privilege,nist-800-53r5.pdf,63,,"Employ the principle of least privilege, allowing only authorized accesses for users",
+Q11,dev,conceptual,What is the person whose personal data is collected called?,india-dpdp-2023.pdf,2,,means the individual to whom the personal data relates,different vocabulary
+Q12,dev,conceptual,What is the penalty for using another person's password dishonestly?,india-it-act-2000.pdf,24,,"fraudulently or dishonestly make use of the electronic signature, password or any other unique identification feature of any other person",different vocabulary
+Q13,dev,conceptual,When can a government office refuse to share information because of national security?,india-rti-2005.pdf,7,,prejudicially affect the sovereignty and integrity of India,"different vocabulary; Act text appears twice; also at: 35, 59"
+Q14,test,conceptual,How does the protocol stop others from listening in or altering messages?,rfc-8446.txt,,21-22,"prevent eavesdropping, tampering, and message forgery",different vocabulary
+Q15,dev,conceptual,Which request type replaces an existing resource with the data I send?,rfc-9110.pdf,77,,be created or replaced with the state defined by the representation,different vocabulary (PUT)
+Q16,test,conceptual,How do two computers agree to start a connection before sending data?,rfc-9293.pdf,21,,This is done in an exchange of connection-establishing segments carrying a control bit called,different vocabulary; gold tentative
+Q17,dev,conceptual,Why should a general avoid dragging a campaign on for a long time?,gutenberg-art-of-war.txt,,1917-1918,There is no instance of a country having benefited from prolonged warfare,different vocabulary
+Q18,test,conceptual,How did Victor react when the creature he built came alive?,gutenberg-frankenstein.txt,,1547-1548,breathless horror and disgust filled my heart,different vocabulary
+Q19,dev,conceptual,How do we decide that an unusual event counts as an official security incident?,nist-800-61r3.pdf,34,,Incidents are declared when adverse events meet the defined incident criteria,different vocabulary
+Q20,test,conceptual,What kinds of user accounts should not be permitted on a system?,nist-800-53r5.pdf,46,,types of accounts allowed and specifically prohibited for use within the system,different vocabulary
+Q21,dev,long,What must a company tell people about their personal data before asking for their consent?,india-dpdp-2023.pdf,4,,accompanied or preceded by a notice given by the Data Fiduciary,
+Q22,test,long,"Who in a government office should I send my request for records to, and must every office appoint one?",india-rti-2005.pdf,5,,designate as many officers as the Central Public Information Officers or State Public,Act text appears twice; also at: 32
+Q23,dev,long,"If a company is careless with sensitive personal data and someone suffers a loss as a result, does the company have to pay compensation?",india-it-act-2000.pdf,19,,is negligent in implementing and maintaining reasonable security practices and procedures,
+Q24,dev,long,How many failed login attempts should a system allow before it takes action?,nist-800-53r5.pdf,66,,consecutive invalid logon attempts by a user,
+Q25,test,long,Why did Alice run across the field after the rabbit at the start of the story?,gutenberg-alice.txt,,82-83,"burning with curiosity, she ran across the field after it",
+Q26,dev,typo,Concent Manger single point of contact,india-dpdp-2023.pdf,2,,"acts as a single point of contact to enable a Data Principal to give, manage, review and withdraw her consent",
+Q27,test,typo,digitel signiture authentcation of electronic record,india-it-act-2000.pdf,7,,authentication of any electronic record by a subscriber by means of an electronic method or procedure,
+Q28,dev,typo,characterisitcs of trustworty AI,nist-ai-rmf-1.pdf,8,,"accountable and transparent, explainable and interpretable",
+Q29,dev,typo,Cheshire Cat vanishing but the grinn stays,gutenberg-alice.txt,,1564-1564,"beginning with the end of the tail, and ending with the grin",
+Q30,test,typo,how to make a requst for informashun in writting,india-rti-2005.pdf,6,,shall make a request in writing or through electronic means,Act text appears twice; also at: 33
+Q31,dev,keyword,incident response playbooks,nist-800-61r3.pdf,17,,Playbooks provide actionable steps or tasks for people to perform during various scenarios or situations,
+Q32,test,conceptual,What does engineering a whole system cover from design to disposal?,nasa-se-handbook.pdf,13,,"a methodical, multi-disciplinary approach for the design, realization, technical management",different vocabulary; gold tentative
+U01,dev,unanswerable,How do I renew my passport in India?,,,,,answer is in no document; expected: no good match
+U02,dev,unanswerable,What is the current GST rate on restaurant meals?,,,,,answer is in no document; expected: no good match
+U03,test,unanswerable,What are the common symptoms of influenza?,,,,,answer is in no document; expected: no good match
+U04,test,unanswerable,Who won the 2022 FIFA World Cup?,,,,,answer is in no document; expected: no good match
