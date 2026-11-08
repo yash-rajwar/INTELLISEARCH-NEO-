@@ -1,0 +1,89 @@
+﻿mode,id,type,split,status,doc_rank,passage_rank,passage_kind,wall_ms,took_ms,top_title,top_score,error,question,expected_doc
+keyword,Q01,keyword,dev,ok,1,,,65,3,"Digital Personal Data Protection Act, 2023 (India)",28.2728,,Data Fiduciary definition,india-dpdp-2023.pdf
+keyword,Q02,keyword,dev,ok,1,4,exact,54,2,"Information Technology Act, 2000 (India)",30.838484,,cyber terrorism,india-it-act-2000.pdf
+keyword,Q04,keyword,dev,ok,1,1,exact,55,3,NIST AI Risk Management Framework 1.0,78.11197,,GOVERN MAP MEASURE MANAGE core functions,nist-ai-rmf-1.pdf
+keyword,Q05,keyword,dev,ok,1,1,exact,62,7,NIST Cybersecurity Framework 2.0,54.068554,,six functions of the Cybersecurity Framework Core,nist-csf-2.pdf
+keyword,Q07,keyword,dev,ok,1,1,exact,89,4,RFC 9110: HTTP Semantics,33.446507,,404 Not Found,rfc-9110.pdf
+keyword,Q08,keyword,dev,ok,1,2,exact,93,3,RFC 9110: HTTP Semantics,23.528898,,idempotent,rfc-9110.pdf
+keyword,Q09,keyword,dev,ok,1,1,exact,85,2,"The Art of War (Sun Tzu, tr. Giles)",25.353275,,warfare deception,gutenberg-art-of-war.txt
+keyword,Q11,conceptual,dev,ok,1,1,fuzzy,98,18,"Digital Personal Data Protection Act, 2023 (India)",35.10769,,What is the person whose personal data is collected called?,india-dpdp-2023.pdf
+keyword,Q12,conceptual,dev,ok,1,1,exact,69,9,"Information Technology Act, 2000 (India)",34.501507,,What is the penalty for using another person's password dishonestly?,india-it-act-2000.pdf
+keyword,Q13,conceptual,dev,ok,,,,77,20,NIST SP 800-53 Rev. 5: Security and Privacy Controls,41.89553,,When can a government office refuse to share information because of national security?,india-rti-2005.pdf
+keyword,Q15,conceptual,dev,ok,1,6,exact,61,9,RFC 9110: HTTP Semantics,43.39378,,Which request type replaces an existing resource with the data I send?,rfc-9110.pdf
+keyword,Q17,conceptual,dev,ok,1,5,exact,101,17,"The Art of War (Sun Tzu, tr. Giles)",28.225307,,Why should a general avoid dragging a campaign on for a long time?,gutenberg-art-of-war.txt
+keyword,Q19,conceptual,dev,ok,1,5,exact,59,9,NIST SP 800-61 Rev. 3: Incident Response,36.53961,,How do we decide that an unusual event counts as an official security incident?,nist-800-61r3.pdf
+keyword,Q21,long,dev,ok,1,2,fuzzy,103,8,"Digital Personal Data Protection Act, 2023 (India)",42.355286,,What must a company tell people about their personal data before asking for their consent?,india-dpdp-2023.pdf
+keyword,Q23,long,dev,ok,1,1,exact,138,23,"Information Technology Act, 2000 (India)",61.93746,,"If a company is careless with sensitive personal data and someone suffers a loss as a result, does the company have to pay compensation?",india-it-act-2000.pdf
+keyword,Q24,long,dev,ok,2,9,exact,61,8,NIST SP 800-61 Rev. 3: Incident Response,35.857365,,How many failed login attempts should a system allow before it takes action?,nist-800-53r5.pdf
+keyword,Q26,typo,dev,ok,1,1,exact,63,8,"Digital Personal Data Protection Act, 2023 (India)",23.262442,,Concent Manger single point of contact,india-dpdp-2023.pdf
+keyword,Q28,typo,dev,ok,1,,,65,5,NIST AI Risk Management Framework 1.0,17.160608,,characterisitcs of trustworty AI,nist-ai-rmf-1.pdf
+keyword,Q29,typo,dev,ok,1,1,exact,64,5,Alice's Adventures in Wonderland (Lewis Carroll),35.006653,,Cheshire Cat vanishing but the grinn stays,gutenberg-alice.txt
+keyword,Q31,keyword,dev,ok,1,1,exact,53,3,NIST SP 800-61 Rev. 3: Incident Response,47.54361,,incident response playbooks,nist-800-61r3.pdf
+keyword,U01,unanswerable,dev,ok,,,,62,6,Frankenstein (Mary Shelley),27.569216,,How do I renew my passport in India?,
+keyword,U02,unanswerable,dev,ok,,,,64,8,Dracula (Bram Stoker),21.378311,,What is the current GST rate on restaurant meals?,
+semantic,Q01,keyword,dev,ok,1,2,fuzzy,110,45,"Digital Personal Data Protection Act, 2023 (India)",17.738117,,Data Fiduciary definition,india-dpdp-2023.pdf
+semantic,Q02,keyword,dev,ok,1,3,exact,217,156,"Information Technology Act, 2000 (India)",18.911427,,cyber terrorism,india-it-act-2000.pdf
+semantic,Q04,keyword,dev,ok,1,5,exact,309,248,NIST AI Risk Management Framework 1.0,24.912638,,GOVERN MAP MEASURE MANAGE core functions,nist-ai-rmf-1.pdf
+semantic,Q05,keyword,dev,ok,1,1,exact,244,173,NIST Cybersecurity Framework 2.0,22.182842,,six functions of the Cybersecurity Framework Core,nist-csf-2.pdf
+semantic,Q07,keyword,dev,ok,1,1,exact,236,142,RFC 9110: HTTP Semantics,16.626171,,404 Not Found,rfc-9110.pdf
+semantic,Q08,keyword,dev,ok,1,2,exact,94,42,RFC 9110: HTTP Semantics,13.75986,,idempotent,rfc-9110.pdf
+semantic,Q09,keyword,dev,ok,1,2,exact,192,124,"The Art of War (Sun Tzu, tr. Giles)",16.432125,,warfare deception,gutenberg-art-of-war.txt
+semantic,Q11,conceptual,dev,ok,1,2,exact,255,175,"Digital Personal Data Protection Act, 2023 (India)",14.435491,,What is the person whose personal data is collected called?,india-dpdp-2023.pdf
+semantic,Q12,conceptual,dev,ok,1,3,exact,109,53,"Information Technology Act, 2000 (India)",16.643347,,What is the penalty for using another person's password dishonestly?,india-it-act-2000.pdf
+semantic,Q13,conceptual,dev,ok,3,,,136,79,NIST SP 800-53 Rev. 5: Security and Privacy Controls,14.68482,,When can a government office refuse to share information because of national security?,india-rti-2005.pdf
+semantic,Q15,conceptual,dev,ok,1,1,exact,105,50,RFC 9110: HTTP Semantics,16.879658,,Which request type replaces an existing resource with the data I send?,rfc-9110.pdf
+semantic,Q17,conceptual,dev,ok,1,,,122,63,"The Art of War (Sun Tzu, tr. Giles)",14.663011,,Why should a general avoid dragging a campaign on for a long time?,gutenberg-art-of-war.txt
+semantic,Q19,conceptual,dev,ok,1,4,exact,155,98,NIST SP 800-61 Rev. 3: Incident Response,14.079493,,How do we decide that an unusual event counts as an official security incident?,nist-800-61r3.pdf
+semantic,Q21,long,dev,ok,1,4,exact,148,84,"Digital Personal Data Protection Act, 2023 (India)",18.933462,,What must a company tell people about their personal data before asking for their consent?,india-dpdp-2023.pdf
+semantic,Q23,long,dev,ok,1,1,exact,124,59,"Information Technology Act, 2000 (India)",16.320866,,"If a company is careless with sensitive personal data and someone suffers a loss as a result, does the company have to pay compensation?",india-it-act-2000.pdf
+semantic,Q24,long,dev,ok,1,5,exact,198,84,NIST SP 800-53 Rev. 5: Security and Privacy Controls,24.457085,,How many failed login attempts should a system allow before it takes action?,nist-800-53r5.pdf
+semantic,Q26,typo,dev,ok,,,,124,30,NASA Systems Engineering Handbook,5.659222,,Concent Manger single point of contact,india-dpdp-2023.pdf
+semantic,Q28,typo,dev,ok,1,,,116,54,NIST AI Risk Management Framework 1.0,13.303551,,characterisitcs of trustworty AI,nist-ai-rmf-1.pdf
+semantic,Q29,typo,dev,ok,1,1,exact,106,32,Alice's Adventures in Wonderland (Lewis Carroll),13.750211,,Cheshire Cat vanishing but the grinn stays,gutenberg-alice.txt
+semantic,Q31,keyword,dev,ok,1,1,exact,110,32,NIST SP 800-61 Rev. 3: Incident Response,21.100721,,incident response playbooks,nist-800-61r3.pdf
+semantic,U01,unanswerable,dev,ok,,,,87,28,"Information Technology Act, 2000 (India)",14.393322,,How do I renew my passport in India?,
+semantic,U02,unanswerable,dev,ok,,,,93,34,"Right to Information Act, 2005 (India) with DoPT Guide",7.416443,,What is the current GST rate on restaurant meals?,
+hybrid,Q01,keyword,dev,ok,1,7,fuzzy,123,45,"Digital Personal Data Protection Act, 2023 (India)",0.03226646,,Data Fiduciary definition,india-dpdp-2023.pdf
+hybrid,Q02,keyword,dev,ok,1,3,exact,154,96,"Information Technology Act, 2000 (India)",0.032522473,,cyber terrorism,india-it-act-2000.pdf
+hybrid,Q04,keyword,dev,ok,1,2,exact,252,162,NIST AI Risk Management Framework 1.0,0.03201844,,GOVERN MAP MEASURE MANAGE core functions,nist-ai-rmf-1.pdf
+hybrid,Q05,keyword,dev,ok,1,1,exact,316,107,NIST Cybersecurity Framework 2.0,0.032522473,,six functions of the Cybersecurity Framework Core,nist-csf-2.pdf
+hybrid,Q07,keyword,dev,ok,1,1,exact,120,46,RFC 9110: HTTP Semantics,0.032786883,,404 Not Found,rfc-9110.pdf
+hybrid,Q08,keyword,dev,ok,1,2,exact,146,76,RFC 9110: HTTP Semantics,0.032786883,,idempotent,rfc-9110.pdf
+hybrid,Q09,keyword,dev,ok,1,1,exact,158,100,"The Art of War (Sun Tzu, tr. Giles)",0.032522473,,warfare deception,gutenberg-art-of-war.txt
+hybrid,Q11,conceptual,dev,ok,1,1,exact,195,127,"Digital Personal Data Protection Act, 2023 (India)",0.032002047,,What is the person whose personal data is collected called?,india-dpdp-2023.pdf
+hybrid,Q12,conceptual,dev,ok,1,1,exact,220,158,"Information Technology Act, 2000 (India)",0.03226646,,What is the penalty for using another person's password dishonestly?,india-it-act-2000.pdf
+hybrid,Q13,conceptual,dev,ok,,,,241,184,NIST SP 800-53 Rev. 5: Security and Privacy Controls,0.031778056,,When can a government office refuse to share information because of national security?,india-rti-2005.pdf
+hybrid,Q15,conceptual,dev,ok,1,1,exact,219,161,RFC 9110: HTTP Semantics,0.031544957,,Which request type replaces an existing resource with the data I send?,rfc-9110.pdf
+hybrid,Q17,conceptual,dev,ok,1,5,exact,314,175,"The Art of War (Sun Tzu, tr. Giles)",0.031544957,,Why should a general avoid dragging a campaign on for a long time?,gutenberg-art-of-war.txt
+hybrid,Q19,conceptual,dev,ok,1,4,exact,213,145,NIST SP 800-61 Rev. 3: Incident Response,0.032786883,,How do we decide that an unusual event counts as an official security incident?,nist-800-61r3.pdf
+hybrid,Q21,long,dev,ok,1,4,fuzzy,253,174,"Digital Personal Data Protection Act, 2023 (India)",0.031544957,,What must a company tell people about their personal data before asking for their consent?,india-dpdp-2023.pdf
+hybrid,Q23,long,dev,ok,1,1,exact,269,210,"Information Technology Act, 2000 (India)",0.032786883,,"If a company is careless with sensitive personal data and someone suffers a loss as a result, does the company have to pay compensation?",india-it-act-2000.pdf
+hybrid,Q24,long,dev,ok,1,3,exact,264,199,NIST SP 800-53 Rev. 5: Security and Privacy Controls,0.032258064,,How many failed login attempts should a system allow before it takes action?,nist-800-53r5.pdf
+hybrid,Q26,typo,dev,ok,6,9,exact,134,77,NIST SP 800-53 Rev. 5: Security and Privacy Controls,0.030213539,,Concent Manger single point of contact,india-dpdp-2023.pdf
+hybrid,Q28,typo,dev,ok,1,,,179,117,NIST AI Risk Management Framework 1.0,0.031280547,,characterisitcs of trustworty AI,nist-ai-rmf-1.pdf
+hybrid,Q29,typo,dev,ok,1,1,exact,170,113,Alice's Adventures in Wonderland (Lewis Carroll),0.032786883,,Cheshire Cat vanishing but the grinn stays,gutenberg-alice.txt
+hybrid,Q31,keyword,dev,ok,1,1,exact,174,103,NIST SP 800-61 Rev. 3: Incident Response,0.032786883,,incident response playbooks,nist-800-61r3.pdf
+hybrid,U01,unanswerable,dev,ok,,,,107,49,"Right to Information Act, 2005 (India) with DoPT Guide",0.027289378,,How do I renew my passport in India?,
+hybrid,U02,unanswerable,dev,ok,,,,199,133,The Adventures of Sherlock Holmes (Conan Doyle),0.032258064,,What is the current GST rate on restaurant meals?,
+weighted,Q01,keyword,dev,ok,1,4,fuzzy,188,42,"Digital Personal Data Protection Act, 2023 (India)",0.04020296643247463,,Data Fiduciary definition,india-dpdp-2023.pdf
+weighted,Q02,keyword,dev,ok,1,3,exact,148,65,"Information Technology Act, 2000 (India)",0.040719196192490745,,cyber terrorism,india-it-act-2000.pdf
+weighted,Q04,keyword,dev,ok,1,3,exact,165,52,NIST AI Risk Management Framework 1.0,0.04021516393442623,,GOVERN MAP MEASURE MANAGE core functions,nist-ai-rmf-1.pdf
+weighted,Q05,keyword,dev,ok,1,1,exact,261,76,NIST Cybersecurity Framework 2.0,0.040719196192490745,,six functions of the Cybersecurity Framework Core,nist-csf-2.pdf
+weighted,Q07,keyword,dev,ok,1,1,exact,151,35,RFC 9110: HTTP Semantics,0.04098360655737705,,404 Not Found,rfc-9110.pdf
+weighted,Q08,keyword,dev,ok,1,2,exact,167,57,RFC 9110: HTTP Semantics,0.04098360655737705,,idempotent,rfc-9110.pdf
+weighted,Q09,keyword,dev,ok,1,1,exact,161,50,"The Art of War (Sun Tzu, tr. Giles)",0.04058699101004759,,warfare deception,gutenberg-art-of-war.txt
+weighted,Q11,conceptual,dev,ok,1,1,exact,206,62,"Digital Personal Data Protection Act, 2023 (India)",0.040066564260112646,,What is the person whose personal data is collected called?,india-dpdp-2023.pdf
+weighted,Q12,conceptual,dev,ok,1,2,exact,311,79,"Information Technology Act, 2000 (India)",0.04032258064516129,,What is the penalty for using another person's password dishonestly?,india-it-act-2000.pdf
+weighted,Q13,conceptual,dev,ok,,,,209,99,NIST SP 800-53 Rev. 5: Security and Privacy Controls,0.039974779319041615,,When can a government office refuse to share information because of national security?,india-rti-2005.pdf
+weighted,Q15,conceptual,dev,ok,1,1,exact,397,96,RFC 9110: HTTP Semantics,0.03974167908594138,,Which request type replaces an existing resource with the data I send?,rfc-9110.pdf
+weighted,Q17,conceptual,dev,ok,1,5,exact,235,84,"The Art of War (Sun Tzu, tr. Giles)",0.03974167908594138,,Why should a general avoid dragging a campaign on for a long time?,gutenberg-art-of-war.txt
+weighted,Q19,conceptual,dev,ok,1,4,exact,241,120,NIST SP 800-61 Rev. 3: Incident Response,0.04098360655737705,,How do we decide that an unusual event counts as an official security incident?,nist-800-61r3.pdf
+weighted,Q21,long,dev,ok,1,6,fuzzy,255,114,"Digital Personal Data Protection Act, 2023 (India)",0.03974167908594138,,What must a company tell people about their personal data before asking for their consent?,india-dpdp-2023.pdf
+weighted,Q23,long,dev,ok,1,1,exact,178,98,"Information Technology Act, 2000 (India)",0.04098360655737705,,"If a company is careless with sensitive personal data and someone suffers a loss as a result, does the company have to pay compensation?",india-it-act-2000.pdf
+weighted,Q24,long,dev,ok,1,3,exact,255,143,NIST SP 800-53 Rev. 5: Security and Privacy Controls,0.04032258064516129,,How many failed login attempts should a system allow before it takes action?,nist-800-53r5.pdf
+weighted,Q26,typo,dev,ok,,,,277,135,NIST SP 800-53 Rev. 5: Security and Privacy Controls,0.0372557928214448,,Concent Manger single point of contact,india-dpdp-2023.pdf
+weighted,Q28,typo,dev,ok,1,,,356,243,NIST AI Risk Management Framework 1.0,0.038899430740037946,,characterisitcs of trustworty AI,nist-ai-rmf-1.pdf
+weighted,Q29,typo,dev,ok,1,1,exact,191,71,Alice's Adventures in Wonderland (Lewis Carroll),0.04098360655737705,,Cheshire Cat vanishing but the grinn stays,gutenberg-alice.txt
+weighted,Q31,keyword,dev,ok,1,1,exact,241,127,NIST SP 800-61 Rev. 3: Incident Response,0.04098360655737705,,incident response playbooks,nist-800-61r3.pdf
+weighted,U01,unanswerable,dev,ok,,,,171,61,"Right to Information Act, 2005 (India) with DoPT Guide",0.03324175824175824,,How do I renew my passport in India?,
+weighted,U02,unanswerable,dev,ok,,,,183,81,The Adventures of Sherlock Holmes (Conan Doyle),0.04032258064516129,,What is the current GST rate on restaurant meals?,
