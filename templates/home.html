@@ -1,5 +1,5 @@
 {% extends 'base.html' %}{% block crumb %}Overview{% endblock %}{% block content %}
-<section class="hero"><span class="eyebrow">SEMANTIC DOCUMENT DISCOVERY · DOCUMENT INTELLIGENCE · V3</span>
+<section class="hero"><span class="eyebrow">SEMANTIC DOCUMENT DISCOVERY · DOCUMENT INTELLIGENCE · V4</span>
 <h1>Search. Understand. Verify.</h1><p>Explore semantic retrieval, evidence-led question answering, document comparisons, summaries, and OCR — all in a local research showcase.</p>
 <form class="hero-search" action="/search"><input name="q" required maxlength="500" placeholder="{{ 'Try: a scientist destroys his unfinished creation' if LEGACY_ENABLED else 'Ask a question about your documents' }}"><input type="hidden" name="scope" value="{{ 'passages' if LEGACY_ENABLED else 'all' }}"><input type="hidden" name="mode" value="semantic"><button>Search with ELSER →</button></form></section>
 <section class="quick-actions">
@@ -16,7 +16,7 @@
 {% endif %}<a href="/library" class="stat"><span>NEW PASSAGES</span><strong>{{ counts.uploads if counts.uploads is not none else '—' }}</strong><small>Separate experimental index</small></a></div>
 {% if error %}<div class="alert error">Elasticsearch connection: {{ error }}</div>{% endif %}
 <div class="split"><section class="panel"><div class="panel-head"><h2>Explore capabilities</h2><span class="pill">Demo ready</span></div>
-<div class="feature-list"><a href="/search"><b>⌕ &nbsp; Natural language search</b><span>BM25, ELSER, hybrid, weighted RRF ↗</span></a>
+<div class="feature-list"><a href="/search"><b>⌕ &nbsp; Natural language search</b><span>Keyword, fuzzy, ELSER, hybrid, weighted RRF ↗</span></a>
 <a href="/compare"><b>⇄ &nbsp; Compare retrieval methods</b><span>Four rankings, times, and source links ↗</span></a>
 <a href="/library"><b>▤ &nbsp; Upload a new document</b><span>PDF · DOCX · TXT · page-level PDF links ↗</span></a>
 <a href="/demo"><b>▶ &nbsp; Guided project-lead demo</b><span>Prepared queries and source checks ↗</span></a>
