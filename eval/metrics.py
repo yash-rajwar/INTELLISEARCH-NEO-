@@ -49,9 +49,14 @@ def distinct_docs(hits):
 def first_doc_rank(hits, expected_docs):
     """1-based rank (among distinct documents) of the first expected document, or None."""
     wanted = {normalise(doc) for doc in expected_docs if doc}
-    for rank, title in enumerate(distinct_docs(hits), 1):
-        if title in wanted:
-            return rank
+    seen = []
+    for hit in hits:
+        ident = hit.get("filename") or hit.get("title") or ""
+        if ident not in seen:
+            seen.append(ident)
+        keys = {normalise(hit.get("title") or ""), normalise(hit.get("filename") or "")}
+        if keys & wanted:
+            return seen.index(ident) + 1
     return None
 
 

@@ -133,6 +133,7 @@ def _display_hits(rows):
                 "index": index,
                 "type": typ,
                 "title": title,
+                "filename": filename,
                 "author": str(src.get("author") or ""),
                 "passage": chunk[:750],
                 "text": chunk,  # full chunk, used by the evaluation harness
