@@ -43,7 +43,7 @@ from store import (
     save_doc,
     upload_doc,
     all_docs,
-    log_query,
+    log_query as _store_log_query,
     dashboard,
     now,
     save_insights,
@@ -65,12 +65,15 @@ from intelligence import classify, summarize, compare_texts, explain, evidence_r
 from documents import choices, read_source
 from llm import enabled as llm_enabled, generate as llm_generate
 from v2_reader import v2_docs, v2_path, v2_doc
-from config import DATA, V2_INDEX, CORPUS_INDEX
+from config import DATA, V2_INDEX, CORPUS_INDEX, settings
 from bootstrap import load_secret_key, setup_logging
 from badge import license_chip
+from querylog import make_query_logger
 
 setup_logging(DATA)
 log = logging.getLogger("intellisearch")
+
+log_query = make_query_logger(_store_log_query, settings.log_queries)
 
 app = Flask(__name__)
 app.jinja_env.globals["LEGACY_ENABLED"] = LEGACY_ENABLED

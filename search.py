@@ -14,6 +14,14 @@ MODES = {
     "weighted": "Weighted hybrid (BM25 1.0 / ELSER 1.5, fused locally)",
     "fuzzy": "Fuzzy keyword (BM25, tolerates typos)",
 }
+# Typo tolerance for the fuzzy mode. AUTO allows 0 edits for 1-2 letter words, 1 edit for
+# 3-5 letters and 2 edits for 6 or more. The first letter must match (prefix_length 1).
+FUZZY_OPTIONS = {
+    "fuzziness": "AUTO",
+    "prefix_length": 1,
+    "max_expansions": 50,
+    "fuzzy_transpositions": True,
+}
 SCOPES = {"all": "All collections", **{k: v[1] for k, v in SOURCES.items()}}
 
 
@@ -32,7 +40,7 @@ def payload(query, mode, size=12, book_id="", doc_type="", semantic_available=Tr
             "query": query,
             "fields": ["content^2", "title^2", "author", "text", "body", "summary"],
             "type": "best_fields",
-            **({"fuzziness": "AUTO"} if mode == "fuzzy" else {}),
+            **(FUZZY_OPTIONS if mode == "fuzzy" else {}),
         }
     }
     qsem = {"match": {"content_semantic": {"query": query}}}
