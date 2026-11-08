@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Evaluation results - IntelliSearch{% endblock %}
+{% block crumb %}Evaluation results{% endblock %}
+{% block content %}
+<style>
+.ev table{border-collapse:collapse;width:100%;margin:8px 0 24px;background:#fff}
+.ev th,.ev td{border:1px solid #e5eaf2;padding:6px 10px;text-align:left;font-size:.92rem}
+.ev thead th{background:#f4f6fa}
+.ev .caveat{background:#fff4d6;color:#6b4500;border:1px solid #e8c766;border-radius:10px;padding:12px 16px;margin:12px 0 20px}
+.ev .meta{color:#5b6779;font-size:.9rem}
+</style>
+<div class="ev">
+<h1>Evaluation results</h1>
+{% macro head() %}<thead><tr><th>Mode</th><th>Doc hit@1</th><th>Doc hit@3</th><th>Doc hit@5</th><th>Passage hit@1</th><th>Passage hit@3</th><th>Passage hit@5</th><th>MRR</th><th>Latency p50 / p95 ms</th></tr></thead>{% endmacro %}
+{% macro row(mode, s) %}<tr><th scope="row">{{ mode }}</th>
+<td>{{ s['doc_hit@1'] }}/{{ s.doc_n }}</td><td>{{ s['doc_hit@3'] }}/{{ s.doc_n }}</td><td>{{ s['doc_hit@5'] }}/{{ s.doc_n }}</td>
+<td>{{ s['passage_hit@1'] }}/{{ s.passage_n }}</td><td>{{ s['passage_hit@3'] }}/{{ s.passage_n }}</td><td>{{ s['passage_hit@5'] }}/{{ s.passage_n }}</td>
+<td>{{ 'n/a' if s.mrr is none else '%.3f'|format(s.mrr) }}</td>
+<td>{{ 'n/a' if s.wall_p50 is none else (s.wall_p50 ~ ' / ' ~ s.wall_p95) }}</td></tr>{% endmacro %}
+{% if not data %}
+<p>No saved evaluation runs were found in eval/results. Run <code>python -m eval.run_eval --split dev</code> first.</p>
+{% else %}
+<div class="caveat"><strong>Read this first.</strong> This is a small, hand-built question set
+({{ data.meta.question_count }} questions, split: {{ data.meta.split }}) over public and synthetic documents.
+It is exploratory. It is not a production accuracy claim and says nothing about other documents.
+Counts are shown as hits/questions, not percentages. Differences of one question are within noise.</div>
+<p class="meta">Run {{ chosen }} &middot; {{ data.meta.timestamp }} &middot; git {{ data.meta.git_commit }} &middot;
+Elasticsearch {{ data.meta.elasticsearch }} &middot; question file hash {{ data.meta.questions_sha256[:12] }}</p>
+<p class="meta">Doc hit = right document among the top k distinct documents. Passage hit = a top-k chunk contains the
+gold sentence from the source. MRR = mean reciprocal rank of the first matching chunk. Weighted RRF is fused locally
+(BM25 1.0, ELSER 1.5) because Elasticsearch 9.0.0 rejects the weighted retriever format.</p>
+<h2>All answerable questions</h2>
+<table>{{ head() }}<tbody>{% for mode, s in data.summary.items() %}{{ row(mode, s) }}{% endfor %}</tbody></table>
+{% for t, block in by_type.items() %}{% if t != 'unanswerable' %}
+<h2>Question type: {{ t }}</h2>
+<table>{{ head() }}<tbody>{% for mode, s in block.items() %}{{ row(mode, s) }}{% endfor %}</tbody></table>
+{% endif %}{% endfor %}
+{% if unanswerable %}
+<h2>Questions with no answer in the corpus</h2>
+<p class="meta">Every mode still returns a top result. The app does not yet say "no good match".</p>
+<table><thead><tr><th>Question</th>{% for m in data.summary %}<th>{{ m }}</th>{% endfor %}</tr></thead><tbody>
+{% for u in unanswerable %}<tr><td>{{ u.id }}: {{ u.question }}</td>{% for m in data.summary %}<td>{{ u.tops[m] }}</td>{% endfor %}</tr>{% endfor %}
+</tbody></table>
+{% endif %}
+<h2>Other saved runs</h2>
+<p>{% for r in runs %}<a href="/evaluation?run={{ r }}">{{ r }}</a>{% if not loop.last %} &middot; {% endif %}{% endfor %}</p>
+{% endif %}
+</div>
+{% endblock %}
