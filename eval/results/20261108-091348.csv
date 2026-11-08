@@ -1,0 +1,57 @@
+﻿mode,id,type,split,status,doc_rank,passage_rank,passage_kind,wall_ms,took_ms,top_title,top_score,error,question,expected_doc
+keyword,Q03,keyword,test,ok,1,5,exact,347,193,"Right to Information Act, 2005 (India) with DoPT Guide",65.311035,,Central Public Information Officer thirty days,india-rti-2005.pdf
+keyword,Q06,keyword,test,ok,1,,,81,14,RFC 8446: TLS 1.3,19.381615,,HelloRetryRequest,rfc-8446.txt
+keyword,Q10,keyword,test,ok,1,10,exact,87,21,NIST SP 800-53 Rev. 5: Security and Privacy Controls,28.503548,,least privilege,nist-800-53r5.pdf
+keyword,Q14,conceptual,test,ok,1,,,110,57,RFC 8446: TLS 1.3,27.860497,,How does the protocol stop others from listening in or altering messages?,rfc-8446.txt
+keyword,Q16,conceptual,test,ok,1,10,exact,109,52,RFC 9293: Transmission Control Protocol,35.583115,,How do two computers agree to start a connection before sending data?,rfc-9293.pdf
+keyword,Q18,conceptual,test,ok,1,,,95,35,Frankenstein (Mary Shelley),31.581278,,How did Victor react when the creature he built came alive?,gutenberg-frankenstein.txt
+keyword,Q20,conceptual,test,ok,1,,,105,48,NIST SP 800-53 Rev. 5: Security and Privacy Controls,33.968407,,What kinds of user accounts should not be permitted on a system?,nist-800-53r5.pdf
+keyword,Q22,long,test,ok,2,2,fuzzy,205,144,The Adventures of Sherlock Holmes (Conan Doyle),44.790478,,"Who in a government office should I send my request for records to, and must every office appoint one?",india-rti-2005.pdf
+keyword,Q25,long,test,ok,1,1,exact,116,56,Alice's Adventures in Wonderland (Lewis Carroll),58.72826,,Why did Alice run across the field after the rabbit at the start of the story?,gutenberg-alice.txt
+keyword,Q27,typo,test,ok,1,1,fuzzy,91,30,"Information Technology Act, 2000 (India)",28.542511,,digitel signiture authentcation of electronic record,india-it-act-2000.pdf
+keyword,Q30,typo,test,ok,,,,280,221,Pride and Prejudice (Jane Austen),13.250108,,how to make a requst for informashun in writting,india-rti-2005.pdf
+keyword,Q32,conceptual,test,ok,1,,,109,50,NASA Systems Engineering Handbook,35.52181,,What does engineering a whole system cover from design to disposal?,nasa-se-handbook.pdf
+keyword,U03,unanswerable,test,ok,,,,101,42,Frankenstein (Mary Shelley),15.541209,,What are the common symptoms of influenza?,
+keyword,U04,unanswerable,test,ok,,,,91,33,Dracula (Bram Stoker),29.052517,,Who won the 2022 FIFA World Cup?,
+semantic,Q03,keyword,test,failed,,,,,,,,Elasticsearch HTTP 408: timeout [10s] waiting for inference result,Central Public Information Officer thirty days,india-rti-2005.pdf
+semantic,Q06,keyword,test,ok,1,4,exact,3304,3200,RFC 8446: TLS 1.3,16.57777,,HelloRetryRequest,rfc-8446.txt
+semantic,Q10,keyword,test,ok,1,,,299,229,NIST SP 800-53 Rev. 5: Security and Privacy Controls,18.10838,,least privilege,nist-800-53r5.pdf
+semantic,Q14,conceptual,test,ok,3,,,537,475,RFC 9110: HTTP Semantics,15.066183,,How does the protocol stop others from listening in or altering messages?,rfc-8446.txt
+semantic,Q16,conceptual,test,ok,1,2,exact,371,310,RFC 9293: Transmission Control Protocol,18.916653,,How do two computers agree to start a connection before sending data?,rfc-9293.pdf
+semantic,Q18,conceptual,test,ok,1,,,393,334,Frankenstein (Mary Shelley),18.474707,,How did Victor react when the creature he built came alive?,gutenberg-frankenstein.txt
+semantic,Q20,conceptual,test,ok,2,4,fuzzy,451,381,NIST SP 800-171 Rev. 3: Protecting CUI,23.129616,,What kinds of user accounts should not be permitted on a system?,nist-800-53r5.pdf
+semantic,Q22,long,test,ok,1,4,fuzzy,1079,1019,"Right to Information Act, 2005 (India) with DoPT Guide",14.846936,,"Who in a government office should I send my request for records to, and must every office appoint one?",india-rti-2005.pdf
+semantic,Q25,long,test,ok,1,4,exact,382,320,Alice's Adventures in Wonderland (Lewis Carroll),22.636889,,Why did Alice run across the field after the rabbit at the start of the story?,gutenberg-alice.txt
+semantic,Q27,typo,test,ok,1,4,fuzzy,302,242,"Information Technology Act, 2000 (India)",12.90804,,digitel signiture authentcation of electronic record,india-it-act-2000.pdf
+semantic,Q30,typo,test,ok,,,,330,264,RFC 9293: Transmission Control Protocol,6.4881883,,how to make a requst for informashun in writting,india-rti-2005.pdf
+semantic,Q32,conceptual,test,ok,1,4,exact,298,236,NASA Systems Engineering Handbook,16.905281,,What does engineering a whole system cover from design to disposal?,nasa-se-handbook.pdf
+semantic,U03,unanswerable,test,ok,,,,211,145,Pride and Prejudice (Jane Austen),8.961724,,What are the common symptoms of influenza?,
+semantic,U04,unanswerable,test,ok,,,,260,199,RFC 9293: Transmission Control Protocol,7.061738,,Who won the 2022 FIFA World Cup?,
+hybrid,Q03,keyword,test,ok,1,5,exact,1087,982,"Right to Information Act, 2005 (India) with DoPT Guide",0.03201844,,Central Public Information Officer thirty days,india-rti-2005.pdf
+hybrid,Q06,keyword,test,ok,1,5,exact,323,249,RFC 8446: TLS 1.3,0.032786883,,HelloRetryRequest,rfc-8446.txt
+hybrid,Q10,keyword,test,ok,1,,,229,133,NIST SP 800-53 Rev. 5: Security and Privacy Controls,0.03226646,,least privilege,nist-800-53r5.pdf
+hybrid,Q14,conceptual,test,ok,1,,,499,436,RFC 8446: TLS 1.3,0.030886196,,How does the protocol stop others from listening in or altering messages?,rfc-8446.txt
+hybrid,Q16,conceptual,test,ok,1,2,exact,411,347,RFC 9293: Transmission Control Protocol,0.032522473,,How do two computers agree to start a connection before sending data?,rfc-9293.pdf
+hybrid,Q18,conceptual,test,ok,1,,,690,615,Frankenstein (Mary Shelley),0.029957524,,How did Victor react when the creature he built came alive?,gutenberg-frankenstein.txt
+hybrid,Q20,conceptual,test,ok,2,9,fuzzy,1174,1107,NIST SP 800-171 Rev. 3: Protecting CUI,0.030550372,,What kinds of user accounts should not be permitted on a system?,nist-800-53r5.pdf
+hybrid,Q22,long,test,ok,1,1,fuzzy,388,322,"Right to Information Act, 2005 (India) with DoPT Guide",0.03175403,,"Who in a government office should I send my request for records to, and must every office appoint one?",india-rti-2005.pdf
+hybrid,Q25,long,test,ok,1,2,exact,380,316,Alice's Adventures in Wonderland (Lewis Carroll),0.032522473,,Why did Alice run across the field after the rabbit at the start of the story?,gutenberg-alice.txt
+hybrid,Q27,typo,test,ok,1,3,fuzzy,398,335,"Information Technology Act, 2000 (India)",0.031544957,,digitel signiture authentcation of electronic record,india-it-act-2000.pdf
+hybrid,Q30,typo,test,ok,,,,714,646,Pride and Prejudice (Jane Austen),0.016393442,,how to make a requst for informashun in writting,india-rti-2005.pdf
+hybrid,Q32,conceptual,test,ok,1,8,exact,263,200,NASA Systems Engineering Handbook,0.031513646,,What does engineering a whole system cover from design to disposal?,nasa-se-handbook.pdf
+hybrid,U03,unanswerable,test,ok,,,,188,126,The Adventures of Sherlock Holmes (Conan Doyle),0.030213539,,What are the common symptoms of influenza?,
+hybrid,U04,unanswerable,test,ok,,,,173,105,"The Art of War (Sun Tzu, tr. Giles)",0.027912386,,Who won the 2022 FIFA World Cup?,
+weighted,Q03,keyword,test,ok,1,5,exact,143,31,"Right to Information Act, 2005 (India) with DoPT Guide",0.04021516393442623,,Central Public Information Officer thirty days,india-rti-2005.pdf
+weighted,Q06,keyword,test,ok,1,5,exact,147,40,RFC 8446: TLS 1.3,0.04098360655737705,,HelloRetryRequest,rfc-8446.txt
+weighted,Q10,keyword,test,ok,1,,,149,36,NIST SP 800-53 Rev. 5: Security and Privacy Controls,0.04021516393442623,,least privilege,nist-800-53r5.pdf
+weighted,Q14,conceptual,test,ok,1,,,163,54,RFC 8446: TLS 1.3,0.03813257305773343,,How does the protocol stop others from listening in or altering messages?,rfc-8446.txt
+weighted,Q16,conceptual,test,ok,1,2,exact,152,43,RFC 9293: Transmission Control Protocol,0.040719196192490745,,How do two computers agree to start a connection before sending data?,rfc-9293.pdf
+weighted,Q18,conceptual,test,ok,1,,,186,73,Frankenstein (Mary Shelley),0.03789403085177733,,How did Victor react when the creature he built came alive?,gutenberg-frankenstein.txt
+weighted,Q20,conceptual,test,ok,2,7,fuzzy,166,94,NIST SP 800-171 Rev. 3: Protecting CUI,0.0382780554293503,,What kinds of user accounts should not be permitted on a system?,nist-800-53r5.pdf
+weighted,Q22,long,test,ok,1,1,fuzzy,168,58,"Right to Information Act, 2005 (India) with DoPT Guide",0.039566532258064516,,"Who in a government office should I send my request for records to, and must every office appoint one?",india-rti-2005.pdf
+weighted,Q25,long,test,ok,1,2,exact,159,43,Alice's Adventures in Wonderland (Lewis Carroll),0.040719196192490745,,Why did Alice run across the field after the rabbit at the start of the story?,gutenberg-alice.txt
+weighted,Q27,typo,test,ok,1,3,fuzzy,153,45,"Information Technology Act, 2000 (India)",0.03974167908594138,,digitel signiture authentcation of electronic record,india-it-act-2000.pdf
+weighted,Q30,typo,test,ok,,,,172,60,RFC 9293: Transmission Control Protocol,0.02459016393442623,,how to make a requst for informashun in writting,india-rti-2005.pdf
+weighted,Q32,conceptual,test,ok,1,7,exact,161,48,NASA Systems Engineering Handbook,0.039205955334987594,,What does engineering a whole system cover from design to disposal?,nasa-se-handbook.pdf
+weighted,U03,unanswerable,test,ok,,,,142,31,The Adventures of Sherlock Holmes (Conan Doyle),0.0372557928214448,,What are the common symptoms of influenza?,
+weighted,U04,unanswerable,test,ok,,,,148,33,"The Art of War (Sun Tzu, tr. Giles)",0.03440589261484784,,Who won the 2022 FIFA World Cup?,
