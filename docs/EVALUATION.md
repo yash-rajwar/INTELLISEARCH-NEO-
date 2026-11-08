@@ -4,7 +4,7 @@ This document reports how the four search modes behaved on a small, hand-checked
 
 ## Setup
 
-- Corpus: `intellisearch_corpus_v1`, 7,102 passages from 18 documents (public-domain, openly licensed or synthetic; see `ATTRIBUTION.md`).
+- Corpus: `intellisearch_corpus_v1`, 7,102 passages from 18 documents (publicly available documents; licence notes are in `corpus/ATTRIBUTION.md`).
 - Question set v2: 36 questions with source-verified gold spans, frozen at git tag `eval-frozen-v2`. Split: 22 development, 14 test.
 - Modes: keyword (BM25), semantic (ELSER), hybrid (RRF, fused), weighted (RRF with weights, fused locally because Elasticsearch 9.0.0 rejects the weighted retriever format).
 - Metrics: document hit@1, passage hit@1, passage hit@5, MRR. Counts are shown as k/N.

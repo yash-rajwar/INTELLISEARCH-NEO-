@@ -66,4 +66,4 @@ _Last updated: 2026-11-07 by session 2_
 - Test run 20261108-091348, run once (N=12 answerable; semantic 11 because Q03 timed out with ELSER HTTP 408): doc hit@1 keyword 10/12, semantic 8/11, hybrid 10/12, weighted 10/12; passage hit@5 keyword 4/12, semantic 7/11, hybrid 6/12, weighted 6/12
 - Finding: no mode wins consistently; ranking flipped between dev and test; small N
 - Chunking checked: median about 1,250 to 1,340 characters, max 1,399, no oversize; many standards chunks end on headings or footers (page footers appear inside RFC chunks)
-- Open: change the default elastic password, rebind es01 to 127.0.0.1, delete zz_elser_probe (with a yes), corpus manifest and licences, update Q&A guide and slides
+- Open: rebind es01 to 127.0.0.1, delete zz_elser_probe (with a yes), corpus manifest and licences, update Q&A guide and slides
