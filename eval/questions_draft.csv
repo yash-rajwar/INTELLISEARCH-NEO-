@@ -1,0 +1,37 @@
+id,split,type,question,expected_doc,expected_page,expected_lines,gold_span,notes
+Q01,dev,keyword,Data Fiduciary definition,india-dpdp-2023.pdf,,,determines the purpose and means of processing of personal data,
+Q02,dev,keyword,cyber terrorism,india-it-act-2000.pdf,,,to strike terror in the people or any section of the people,
+Q03,test,keyword,Central Public Information Officer thirty days,india-rti-2005.pdf,,,within thirty days of the receipt of the request,Act text appears twice in this PDF
+Q04,dev,keyword,GOVERN MAP MEASURE MANAGE core functions,nist-ai-rmf-1.pdf,,,"GOVERN, MAP, MEASURE, and MANAGE",
+Q05,dev,keyword,six functions of the Cybersecurity Framework Core,nist-csf-2.pdf,,,"GOVERN, IDENTIFY, PROTECT, DETECT, RESPOND, and RECOVER",gold tentative
+Q06,test,keyword,HelloRetryRequest,rfc-8446.txt,,,if it is able to find an acceptable set of parameters but the ClientHello does not contain sufficient information,
+Q07,dev,keyword,404 Not Found,rfc-9110.pdf,,,did not find a current representation for the target resource,
+Q08,dev,keyword,idempotent,rfc-9110.pdf,,,the intended effect on the server of multiple identical requests with that method is the same as the effect for a single such request,
+Q09,dev,keyword,warfare deception,gutenberg-art-of-war.txt,,,All warfare is based on deception,
+Q10,test,keyword,least privilege,nist-800-53r5.pdf,,,"Employ the principle of least privilege, allowing only authorized accesses for users",
+Q11,dev,conceptual,What is the person whose personal data is collected called?,india-dpdp-2023.pdf,,,means the individual to whom the personal data relates,different vocabulary
+Q12,dev,conceptual,What is the penalty for using another person's password dishonestly?,india-it-act-2000.pdf,,,"fraudulently or dishonestly make use of the electronic signature, password or any other unique identification feature of any other person",different vocabulary
+Q13,dev,conceptual,When can a government office refuse to share information because of national security?,india-rti-2005.pdf,,,prejudicially affect the sovereignty and integrity of India,different vocabulary; Act text appears twice
+Q14,test,conceptual,How does the protocol stop others from listening in or altering messages?,rfc-8446.txt,,,"prevent eavesdropping, tampering, and message forgery",different vocabulary
+Q15,dev,conceptual,Which request type replaces an existing resource with the data I send?,rfc-9110.pdf,,,be created or replaced with the state defined by the representation,different vocabulary (PUT)
+Q16,test,conceptual,How do two computers agree to start a connection before sending data?,rfc-9293.pdf,,,involves an exchange of three messages,different vocabulary; gold tentative
+Q17,dev,conceptual,Why should a general avoid dragging a campaign on for a long time?,gutenberg-art-of-war.txt,,,There is no instance of a country having benefited from prolonged warfare,different vocabulary
+Q18,test,conceptual,How did Victor react when the creature he built came alive?,gutenberg-frankenstein.txt,,,breathless horror and disgust filled my heart,different vocabulary
+Q19,dev,conceptual,How do we decide that an unusual event counts as an official security incident?,nist-800-61r3.pdf,,,Incidents are declared when adverse events meet the defined incident criteria,different vocabulary
+Q20,test,conceptual,What kinds of user accounts should not be permitted on a system?,nist-800-53r5.pdf,,,types of accounts allowed and specifically prohibited for use within the system,different vocabulary
+Q21,dev,long,What must a company tell people about their personal data before asking for their consent?,india-dpdp-2023.pdf,,,accompanied or preceded by a notice given by the Data Fiduciary,
+Q22,test,long,"Who in a government office should I send my request for records to, and must every office appoint one?",india-rti-2005.pdf,,,designate as many officers as Central Public Information Officers or State Public Information Officers,Act text appears twice
+Q23,dev,long,"If a company is careless with sensitive personal data and someone suffers a loss as a result, does the company have to pay compensation?",india-it-act-2000.pdf,,,is negligent in implementing and maintaining reasonable security practices and procedures,
+Q24,dev,long,How many failed login attempts should a system allow before it takes action?,nist-800-53r5.pdf,,,consecutive invalid logon attempts by a user,
+Q25,test,long,Why did Alice run across the field after the rabbit at the start of the story?,gutenberg-alice.txt,,,"burning with curiosity, she ran across the field after it",
+Q26,dev,typo,Concent Manger single point of contact,india-dpdp-2023.pdf,,,"acts as a single point of contact to enable a Data Principal to give, manage, review and withdraw her consent",
+Q27,test,typo,digitel signiture authentcation of electronic record,india-it-act-2000.pdf,,,authentication of any electronic record by a subscriber by means of an electronic method or procedure,
+Q28,dev,typo,characterisitcs of trustworty AI,nist-ai-rmf-1.pdf,,,"accountable and transparent, explainable and interpretable",
+Q29,dev,typo,Cheshire Cat vanishing but the grinn stays,gutenberg-alice.txt,,,"beginning with the end of the tail, and ending with the grin",
+Q30,test,typo,how to make a requst for informashun in writting,india-rti-2005.pdf,,,shall make a request in writing or through electronic means,Act text appears twice
+Q31,dev,keyword,incident response playbooks,nist-800-61r3.pdf,,,Playbooks provide actionable steps or tasks for people to perform during various scenarios or situations,
+Q32,test,conceptual,What does engineering a whole system cover from design to disposal?,nasa-se-handbook.pdf,,,"technical management, operations, and retirement of a system",different vocabulary; gold tentative
+U01,dev,unanswerable,How do I renew my passport in India?,,,,,answer is in no document; expected: no good match
+U02,dev,unanswerable,What is the current GST rate on restaurant meals?,,,,,answer is in no document; expected: no good match
+U03,test,unanswerable,What are the common symptoms of influenza?,,,,,answer is in no document; expected: no good match
+U04,test,unanswerable,Who won the 2022 FIFA World Cup?,,,,,answer is in no document; expected: no good match

@@ -22,3 +22,4 @@ data/
 __pycache__/
 *.part
 eval/results_smoke/
+agg.json
