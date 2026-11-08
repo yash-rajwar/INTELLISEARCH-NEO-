@@ -117,7 +117,9 @@ class V3ContractTests(TestCase):
         fake = MixedIndexMock()
         r = search(fake, "creation", "passages", "semantic", size=1)
         searches = [kw["payload"] for m, p, kw in fake.calls if p.endswith("/_search")]
-        self.assertEqual(len(searches), 1)
+        # The semantic search comes first. A second, BM25-only lookup may follow: it is used
+        # to tag hits that were found by meaning and not by keyword.
+        self.assertIn(len(searches), (1, 2))
         self.assertEqual(searches[0]["query"]["match"]["content_semantic"]["query"], "creation")
         self.assertEqual(r["hits"][0]["source_url"], "/book/02?line=42")
 

@@ -59,7 +59,7 @@ from store import (
 )
 from extractors import text_pages, make_chunks
 from es_client import ES, ESFailure
-from search import MODES, SCOPES, search
+from search import MODES, SCOPES, search, result_limit
 from intelligence import classify, summarize, compare_texts, explain, evidence_reply
 from documents import choices, read_source
 from llm import enabled as llm_enabled, generate as llm_generate
@@ -170,12 +170,13 @@ def search_page():
         scope = "all"
     if mode not in MODES:
         mode = "keyword"
+    limit = result_limit(request.args.get("n"))
     result = None
     error = ""
     if q:
         started = time.monotonic()
         try:
-            result = search(client(), q, scope, mode, book_id, doc_type, size=30)
+            result = search(client(), q, scope, mode, book_id, doc_type, size=limit)
         except (ESFailure, ValueError, KeyError) as exc:
             error = str(exc)
             log.warning("search failed (scope=%s mode=%s): %s", scope, mode, exc)
@@ -191,6 +192,7 @@ def search_page():
         book_id=book_id,
         doc_type=doc_type,
         result=result,
+        limit=limit,
         error=error,
     )
 

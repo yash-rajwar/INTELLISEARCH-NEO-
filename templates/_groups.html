@@ -1,5 +1,5 @@
 {% for g in groups %}{% set b = g.best %}
-<article class="hit"><div class="hit-top"><span class="rank">#{{ g.rank }}</span><span class="pill">{{ g.type | replace('_',' ') }}</span>{% if g.file_type %}<span class="pill muted">{{ g.file_type.lstrip('.').upper() }}</span>{% endif %}<span class="score">{{ g.hits|length }} matching passage{{ '' if g.hits|length == 1 else 's' }}</span></div>
+<article class="hit"><div class="hit-top"><span class="rank">#{{ g.rank }}</span><span class="pill">{{ g.type | replace('_',' ') }}</span>{% if g.file_type %}<span class="pill muted">{{ g.file_type.lstrip('.').upper() }}</span>{% endif %}{% if b.meaning_only %}<span class="pill meaning" title="The semantic search returned this passage, but it is not among the top keyword (BM25) results for this query.">found by meaning, not by keyword</span>{% endif %}<span class="score">{{ g.hits|length }} matching passage{{ '' if g.hits|length == 1 else 's' }}</span></div>
 <h3>{{ g.title }}</h3>
 <div class="metadata">{% if g.pages %}Pages {{ g.pages|join(', ') }}{% endif %}{% if b.start_line %}{% if g.pages %} &middot; {% endif %}Best match at line {{ b.start_line }}{% endif %}{% if b.author %} &middot; {{ b.author }}{% endif %}</div>
 <div class="excerpt">{{ b.passage|hl(q) }}</div>

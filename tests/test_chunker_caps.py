@@ -18,11 +18,12 @@ class UploadLimitTests(unittest.TestCase):
         self.assertIn("ENDMARKER", chunks[-1]["content"])
 
     def test_too_many_passages_is_refused(self):
-        from extractors import MAX_PASSAGES, make_chunks
+        import extractors
 
-        words = MAX_PASSAGES * 1400 // 5 + 20000
-        with self.assertRaises(ValueError):
-            make_chunks([{"page": None, "text": "word " * words}])
+        # A tiny limit keeps the test fast; the logic is the same.
+        with mock.patch.object(extractors, "MAX_PASSAGES", 5):
+            with self.assertRaises(ValueError):
+                extractors.make_chunks([{"page": None, "text": "word " * 2000}])
 
     def test_short_text_gives_one_passage(self):
         from extractors import make_chunks

@@ -8,5 +8,6 @@
 {% set flat = request.args.get('view') == 'flat' %}
 <p class="metadata">{{ result.hits|length }} passage(s) from {{ result.groups|length }} document(s) &middot; {% if flat %}<a href="{{ url_for('search_page', **dict(request.args.to_dict(), view='grouped')) }}">Group by document</a>{% else %}<a href="{{ url_for('search_page', **dict(request.args.to_dict(), view='flat')) }}">Show every passage</a>{% endif %}</p>
 <div class="results">{% if flat %}{% set hits=result.hits %}{% include '_hits.html' %}{% else %}{% set groups=result.groups %}{% include '_groups.html' %}{% endif %}</div>
+{% if limit is defined and result.hits|length >= limit and limit < 150 %}<p><a class="buttonlink" href="{{ url_for('search_page', **dict(request.args.to_dict(), n=limit + 30)) }}">Show more results</a></p>{% endif %}
 {% elif not q %}<div class="onboarding"><span>✧</span><h2>Start with a question</h2><p>Choose a collection and retrieval method. Try ELSER to locate conceptually similar passages.</p></div>{% endif %}
 {% endblock %}

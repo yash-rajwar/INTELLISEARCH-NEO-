@@ -269,6 +269,7 @@ def search(client, q, scope="all", mode="keyword", book_id="", doc_type="", size
     started = perf_counter()
     d = {}
     took = 0
+    lex_keys = None  # keys of the BM25 results, used for the 'found by meaning' tag
     if mode in ("hybrid", "weighted") and not sem:
         mode_used = "keyword fallback"
         warning = "No ELSER-capable indices are present; showing BM25 results rather than calling this hybrid."
@@ -292,6 +293,7 @@ def search(client, q, scope="all", mode="keyword", book_id="", doc_type="", size
             payload=payload(q, "keyword", pool, book_id, doc_type),
             timeout=35,
         )
+        lex_keys = {(h.get("_index"), h.get("_id")) for h in lex.get("hits", {}).get("hits", [])}
         warning = (
             "Weighted RRF (BM25 1.0, ELSER 1.5) is fused locally because this Elasticsearch version rejects weighted retrievers. Scores are fusion scores, not ES _score."
             if mode == "weighted"
@@ -344,6 +346,13 @@ def search(client, q, scope="all", mode="keyword", book_id="", doc_type="", size
         took = d.get("took", 0)
     elapsed = round((perf_counter() - started) * 1000)
     hits = _display_hits(rows, q)
+    if mode_used in ("semantic", "hybrid", "weighted"):
+        keys = lex_keys
+        if keys is None:
+            keys = lexical_keys(client, names, q, book_id, doc_type, max(50, size))
+        if keys is not None:
+            for row, h in zip(rows, hits):
+                h["meaning_only"] = (row.get("_index"), row.get("_id")) not in keys
     total = d.get("hits", {}).get("total", {})
     count = total.get("value", len(hits)) if isinstance(total, dict) else (total or len(hits))
     return {
@@ -356,3 +365,26 @@ def search(client, q, scope="all", mode="keyword", book_id="", doc_type="", size
         "mode_used": mode_used,
         "indices": active,
     }
+
+
+def lexical_keys(client, names, q, book_id, doc_type, pool):
+    """Keys of the top BM25 results. Returns None if that lookup fails (then no tags are shown)."""
+    try:
+        d = client.api(
+            "POST",
+            ",".join(names) + "/_search",
+            payload=payload(q, "keyword", pool, book_id, doc_type),
+            timeout=35,
+        )
+        return {(h.get("_index"), h.get("_id")) for h in d.get("hits", {}).get("hits", [])}
+    except (ESFailure, KeyError, TypeError, AttributeError):
+        return None
+
+
+def result_limit(raw, default=30, maximum=150):
+    """How many passages to fetch. Accepts the ?n= value; anything odd gives the default."""
+    try:
+        n = int(raw)
+    except (TypeError, ValueError):
+        return default
+    return max(default, min(n, maximum))

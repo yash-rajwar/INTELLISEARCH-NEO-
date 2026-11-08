@@ -24,3 +24,6 @@ __pycache__/
 eval/results_smoke/
 agg.json
 agg.json
+for_claude*.txt
+patch_*.py
+collect_files.py
