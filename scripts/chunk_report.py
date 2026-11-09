@@ -1,4 +1,4 @@
-import random, statistics
+import random, statistics, sys
 from collections import defaultdict
 from pathlib import Path
 import requests
@@ -18,7 +18,7 @@ def read_env():
 
 env = read_env()
 url = env.get("ES_URL", "http://localhost:9200").rstrip("/")
-index = env.get("CORPUS_INDEX", "intellisearch_corpus_v1")
+index = sys.argv[1] if len(sys.argv) > 1 else env.get("CORPUS_INDEX", "intellisearch_corpus_v1")
 s = requests.Session()
 s.trust_env = False
 s.auth = (env.get("ES_USER", "elastic"), env.get("ES_PASSWORD", ""))
