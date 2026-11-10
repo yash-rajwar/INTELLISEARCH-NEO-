@@ -1,0 +1,27 @@
+{
+  "git_commit": "unknown",
+  "index": "intellisearch_corpus_v1",
+  "es_version": "9.2.0",
+  "modes": [
+    "bm25",
+    "elser",
+    "hybrid"
+  ],
+  "application_mode_mapping": {
+    "bm25": "keyword",
+    "elser": "semantic",
+    "hybrid": "hybrid"
+  },
+  "questions_sha256": "7503f9ade1db1ea8fbb7ee2f0e2d8acf29320c73d043adea6a4becb98e77990f",
+  "questions_count": 36,
+  "split": "all",
+  "ids": "",
+  "rrf_parameters": {
+    "rank_constant": 60,
+    "rank_window_size": 50
+  },
+  "timestamp_utc": "2026-11-10T06:52:25.095380+00:00",
+  "strict_definition": "expected filename AND normalized gold span in chunk or qualifying adjacent split",
+  "failed_or_fallback_count": 0,
+  "split_span_questions": 0
+}

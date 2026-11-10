@@ -1,0 +1,10 @@
+id,split,type,mode,status,error,first_relevant_rank,p5,p10,recall10,mrr,ndcg10,top1,doc_p5,doc_p10,doc_hit10,top1_score,latency_ms_client,es_took_ms,split_span_flag
+Q01,dev,keyword,bm25,ok,,,0.0,0.0,0.0,0,0.0,0,1.0,1.0,1,28.2728,6,2,False
+Q05,dev,keyword,bm25,ok,,1,0.4,0.2,1.0,1.0,1.0,1,1.0,0.8,1,54.068554,9,4,False
+Q16,test,conceptual,bm25,ok,,10,0.0,0.1,1.0,0.1,0.2890648263178879,0,0.6,0.6,1,35.583115,8,4,False
+Q01,dev,keyword,elser,ok,,,0.0,0.0,0.0,0,0.0,0,1.0,1.0,1,15.777234,82,70,False
+Q05,dev,keyword,elser,ok,,2,0.4,0.2,1.0,0.5,0.6934264036172708,0,1.0,0.8,1,19.77264,54,41,False
+Q16,test,conceptual,elser,ok,,2,0.2,0.1,1.0,0.5,0.6309297535714575,0,1.0,0.7,1,14.837903,65,52,False
+Q01,dev,keyword,hybrid,ok,,,0.0,0.0,0.0,0,0.0,0,1.0,1.0,1,0.03226646,23,10,False
+Q05,dev,keyword,hybrid,ok,,1,0.4,0.2,1.0,1.0,1.0,1,1.0,0.8,1,0.03226646,25,12,False
+Q16,test,conceptual,hybrid,ok,,3,0.2,0.1,1.0,0.3333333333333333,0.5,0,0.6,0.8,1,0.032522473,28,14,False
