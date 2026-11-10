@@ -119,3 +119,5 @@ Not cited (older runs with a since-fixed scoring bug, and an old 23-question dra
 
 ## Batch 26 (8 Nov 2026)
 - Renamed the product to IntelliSearch NEO in the app, README and documents (display text only; index names, file names and earlier run results are unchanged).
+
+- 2026-11-10 | Report Batch 1: environment, ELSER and 14/14 document coverage verified; baseline commit 2503794; see report/batch_1.md.
